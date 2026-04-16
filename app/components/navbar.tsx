@@ -4,8 +4,8 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
 const navItems = [
-  { label: 'About Me', href: '/pages/about', accentColor: 'bg-rose-600 hover:bg-rose-700' },
-  { label: 'Beatnik', href: '/pages/beatnik', accentColor: 'bg-indigo-600 hover:bg-indigo-700' },
+  { label: 'About Me', href: '/about', accentColor: 'bg-rose-600 hover:bg-rose-700', emoji: '👤' },
+  { label: 'Beatnik', href: '/beatnik', accentColor: 'bg-indigo-600 hover:bg-indigo-700', emoji: '🎸' },
 ];
 
 export default function Navbar() {
@@ -28,6 +28,8 @@ export default function Navbar() {
                 ${isActive ? 'ring-2 ring-white ring-inset shadow-inner' : ''}
               `}
             >
+              <span className="text-2xl">{item.emoji}</span>
+              <span>{item.label}</span>
             </Link>
           );
         })}

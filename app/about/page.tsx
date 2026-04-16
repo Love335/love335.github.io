@@ -30,7 +30,7 @@ export default function About() {
       <div className="mt-16 flex justify-center">
         <div className="relative w-80 h-80 rounded-3xl overflow-hidden border border-zinc-700">
           <Image
-            src="https://picsum.photos/id/64/800/800"
+            src="https://picsum.photos/id/1015/800/600"
             alt="Me"
             fill
             className="object-cover"
