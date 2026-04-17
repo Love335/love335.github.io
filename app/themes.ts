@@ -1,5 +1,36 @@
 import { Theme } from './theme-provider';
 
+export const aboutTheme: Theme = {
+  page: {
+    background: "bg-[var(--about-background)]",
+    text: "text-[var(--about-foreground)]",
+  },
+  text: {
+    heading: "text-[var(--about-primary)]",
+    subheading: "text-[var(--about-muted)]",
+    body: "text-[var(--about-muted)]",
+    sectionTitle: "text-[var(--about-primary)]",
+  },
+  surfaces: {
+    card: "bg-[var(--about-surface)] border border-[var(--about-border)]",
+  },
+  collaborators: {
+    title: "text-[var(--about-muted)]",
+    name: "text-[var(--about-foreground)]",
+    border: "border-[var(--about-border)]",
+    borderHover: "group-hover:border-[var(--about-accent)]",
+  },
+  skills: {
+    container: "bg-[var(--about-surface)] border border-[var(--about-border)]",
+    headerText: "text-[var(--about-muted)]",
+    rowHover: "hover:bg-[var(--about-row-hover-surface)]",
+    categoryText: "text-[var(--about-primary)]",
+    itemsText: "text-[var(--about-muted)]",
+    border: "border-[var(--about-border)]",
+    divider: "divide-[var(--about-muted)]",
+  },
+};
+
 export const beatnikTheme: Theme = {
   page: {
     background: "",

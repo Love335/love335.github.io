@@ -16,6 +16,37 @@
   --font-mono: ui-monospace, monospace;
 
   /* =========================================================
+     ABOUT PALETTE (Earthy Systems Theme for About Page)
+     ======================================================== */
+  --about-1: #52414c; /* deep muted purple-gray */
+  --about-2: #596157; /* dark muted green-gray */
+  --about-3: #5b8c5a; /* vibrant mid green */
+  --about-4: #cfd186; /* warm light beige-yellow */
+  --about-5: #e3655b; /* energetic coral */
+  --about-6: #3a2f37; /* deeper background variant */
+  --about-7: #7a9a6f; /* softer green */
+  --about-8: #e6d9b0; /* lighter highlight */
+  --about-9: #f07e72; /* softer coral */
+
+  /* About Semantic Tokens */
+  --about-background: var(--about-6);
+  --about-foreground: var(--about-4);
+  --about-primary: var(--about-5);
+  --about-primary-hover: #d14f4a;
+  --about-accent: var(--about-3);
+  --about-accent-hover: #4e7a4e;
+  --about-surface: var(--about-2);
+  --about-surface-elevated: var(--about-1);
+  --about-border: #484c46;
+  --about-muted: #b9c0b4;
+  --about-subtle: #a0a89c;
+  --about-highlight: var(--about-4);
+
+  /* About Row Hovers */
+  --about-row-hover-primary: #3f2e3a;
+  --about-row-hover-surface: #4f544d;
+
+  /* =========================================================
      BEATNIK (DEFAULT) PALETTE
      ======================================================== */
   --color-1: #6e0d25;     /* dark red */
