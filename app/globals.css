@@ -17,25 +17,30 @@
   --color-3: #dcab6b; /* warm gold */
   --color-4: #774e24; /* walnut */
   --color-5: #6a381f; /* dark walnut */
+  --color-6: #8f5e32;
+  --color-7: #460818;
 
   --color-background: var(--color-5);
   --color-foreground: var(--color-2);
 
   --color-primary: var(--color-1);
-  --color-primary-hover: var(--color-4);
+  --color-primary-hover: var(--color-7);
 
   --color-accent: var(--color-3);
-  --color-accent-hover: var(--color-4);
+  --color-accent-hover: var(--color-6);
 
   --color-surface: var(--color-4);
-  --color-surface-elevated: var(--color-1);
+  --color-surface-elevated: var(--color-6);
 
   --color-border: var(--color-4);
 
   --color-muted: var(--color-3);
-  --color-subtle: var(--color-4);
+  --color-subtle: var(--color-6);
 
   --color-highlight: var(--color-2);
+
+  --row-hover-primary: #460818;
+  --row-hover-walnut: #6a381f;
 }
 
 body {
