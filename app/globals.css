@@ -8,39 +8,74 @@
 }
 
 @theme inline {
+  /* =========================================================
+     FONTS
+     ======================================================== */
   --font-sans: var(--font-sans);
   --font-heading: "Cabinet Grotesk", var(--font-sans);
   --font-mono: ui-monospace, monospace;
 
-  --color-1: #6e0d25; /* dark red */
-  --color-2: #ffffb3; /* cream */
-  --color-3: #dcab6b; /* warm gold */
-  --color-4: #774e24; /* walnut */
-  --color-5: #6a381f; /* dark walnut */
-  --color-6: #8f5e32;
-  --color-7: #460818;
+  /* =========================================================
+     BEATNIK (DEFAULT) PALETTE
+     ======================================================== */
+  --color-1: #6e0d25;     /* dark red */
+  --color-2: #ffffb3;     /* cream */
+  --color-3: #dcab6b;     /* warm gold */
+  --color-4: #774e24;     /* walnut */
+  --color-5: #6a381f;     /* dark walnut */
+  --color-6: #8f5e32;     /* mid walnut */
+  --color-7: #460818;     /* deep dark red */
 
+  /* Beatnik Semantic Tokens */
   --color-background: var(--color-5);
   --color-foreground: var(--color-2);
-
   --color-primary: var(--color-1);
   --color-primary-hover: var(--color-7);
-
   --color-accent: var(--color-3);
   --color-accent-hover: var(--color-6);
-
   --color-surface: var(--color-4);
   --color-surface-elevated: var(--color-6);
-
   --color-border: var(--color-4);
-
   --color-muted: var(--color-3);
   --color-subtle: var(--color-6);
-
   --color-highlight: var(--color-2);
 
+  /* Beatnik Row Hovers */
   --row-hover-primary: #460818;
   --row-hover-walnut: #6a381f;
+
+  /* =========================================================
+     BREAKEVEN PALETTE
+     ======================================================== */
+  --breakeven-background: #1a1423;
+  --breakeven-foreground: #f5f1e6;
+  --breakeven-primary: #a855f7;      /* purple */
+  --breakeven-accent: #fbbf24;       /* amber */
+  --breakeven-surface: #2a1f3d;
+  --breakeven-border: #3b2a57;
+  --breakeven-muted: #c4b5fd;
+  --breakeven-subtle: #c4b5fd;
+
+  /* =========================================================
+     BONSAI PALETTE
+     ======================================================== */
+  --bonsai-1: #f1fffa;   /* background light */
+  --bonsai-2: #ccfccb;   /* soft green */
+  --bonsai-3: #96e6b3;   /* mid green */
+  --bonsai-4: #568259;   /* deep green */
+  --bonsai-5: #464e47;   /* dark forest */
+
+  /* Bonsai Semantic Tokens */
+  --bonsai-background: var(--bonsai-1);
+  --bonsai-foreground: var(--bonsai-5);
+  --bonsai-primary: var(--bonsai-4);
+  --bonsai-accent: var(--bonsai-3);
+  --bonsai-surface: var(--bonsai-2);
+  --bonsai-surface-deep: var(--bonsai-3);
+  --bonsai-border: var(--bonsai-3);
+  --bonsai-muted: var(--bonsai-4);
+  --bonsai-subtle: var(--bonsai-5);
+  --bonsai-row-hover: rgba(86, 130, 89, 0.15);
 }
 
 body {

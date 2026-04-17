@@ -160,7 +160,7 @@ function BreakEvenContent() {
             skills={[
               { category: "Frontend", items: "JavaScript, HTML, CSS" },
               { category: "Backend", items: "Python, Flask" },
-              { category: "Tools", items: "VSCode, Git, APIs" },
+              { category: "Tools", items: "APIs, Git, VSCode" },
             ]}
           />
         </div>

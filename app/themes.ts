@@ -61,3 +61,38 @@ export const breakevenTheme: Theme = {
     divider: "divide-muted",
   },
 };
+
+export const bonsaiTheme: Theme = {
+  page: {
+    background: "bg-[var(--bonsai-surface)]",
+    text: "text-[var(--bonsai-muted)]",
+  },
+
+  text: {
+    heading: "text-[var(--bonsai-primary)]",
+    subheading: "text-[var(--bonsai-muted)]",
+    body: "text-[var(--bonsai-muted)]",
+    sectionTitle: "text-[var(--bonsai-primary)]",
+  },
+
+  surfaces: {
+    card: "bg-[var(--bonsai-surface-deep)] border border-[var(--bonsai-border)]",
+  },
+
+  collaborators: {
+    title: "text-[var(--bonsai-muted)]",
+    name: "text-[var(--bonsai-primary)]",
+    border: "border-[var(--bonsai-primary)]",
+    borderHover: "group-hover:border-[var(--bonsai-accent)]",
+  },
+
+  skills: {
+    container: "bg-[var(--bonsai-surface-deep)] border border-[var(--bonsai-border)]",
+    headerText: "text-[var(--bonsai-primary)]",
+    rowHover: "hover:bg-[var(--bonsai-row-hover)]",
+    categoryText: "text-[var(--bonsai-primary)]",
+    itemsText: "text-[var(--bonsai-muted)]",
+    border: "border-[var(--bonsai-border)]",
+    divider: "divide-[var(--bonsai-primary)]",
+  },
+};
