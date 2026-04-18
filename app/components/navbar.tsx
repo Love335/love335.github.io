@@ -54,7 +54,6 @@ const navItems = [
   },
 ];
 
-// ─── NavbarJack ──────────────────────────────────────────────────────────────
 function NavbarJack({ label, visibleOnHome }: { label: string; visibleOnHome: boolean }) {
   const { registerJack, pluggedLabel, hoveredLabel, onPlugPointerDown } = useWire();
   const ref = useRef<HTMLDivElement>(null);
@@ -100,7 +99,6 @@ function NavbarJack({ label, visibleOnHome }: { label: string; visibleOnHome: bo
   );
 }
 
-// ─── Navbar ──────────────────────────────────────────────────────────────────
 export default function Navbar() {
   const pathname = usePathname();
   const router   = useRouter();
@@ -112,9 +110,6 @@ export default function Navbar() {
         {navItems.map((item) => {
           const isActive = pathname === item.href;
 
-          // ── Active slot → backspace button ──────────────────────────────
-          // On any non-home page, the currently active nav item is replaced
-          // with a ← button that returns to the landing page.
           if (isActive) {
             return (
               <button
@@ -131,7 +126,6 @@ export default function Navbar() {
                   cursor-pointer
                 `}
               >
-                {/* Backspace arrow — clean, unambiguous */}
                 <svg
                   width="22"
                   height="16"
@@ -140,7 +134,6 @@ export default function Navbar() {
                   xmlns="http://www.w3.org/2000/svg"
                   aria-hidden="true"
                 >
-                  {/* Arrow shaft + head */}
                   <path
                     d="M21 8H3M3 8L8 3M3 8L8 13"
                     stroke="white"
@@ -148,7 +141,6 @@ export default function Navbar() {
                     strokeLinecap="round"
                     strokeLinejoin="round"
                   />
-                  {/* Vertical strike — makes it read as backspace not just back */}
                   <line
                     x1="1" y1="2" x2="1" y2="14"
                     stroke="white"
@@ -160,7 +152,6 @@ export default function Navbar() {
             );
           }
 
-          // ── Normal slot → Link ──────────────────────────────────────────
           return (
             <Link
               key={item.href}

@@ -7,23 +7,17 @@ export default function ScrollIndicator() {
   const pathname = usePathname();
   const [show, setShow] = useState(false);
 
-  // Re-evaluate on every route change.
-  // We defer one tick so the new page's content has painted and
-  // scrollHeight reflects the actual page height.
   useEffect(() => {
     const evaluate = () => {
       const scrollable =
         document.documentElement.scrollHeight > window.innerHeight + 4;
-      // +4 accounts for sub-pixel rounding on some browsers
       setShow(scrollable && window.scrollY <= 150);
     };
 
-    // Tick delay so layout is settled after navigation
     const t = setTimeout(evaluate, 50);
     return () => clearTimeout(t);
   }, [pathname]);
 
-  // Hide once the user scrolls down; does not reset until next navigation.
   useEffect(() => {
     const handleScroll = () => {
       if (window.scrollY > 150) setShow(false);
@@ -44,7 +38,6 @@ export default function ScrollIndicator() {
           viewBox="0 0 24 24"
           stroke="currentColor"
         >
-          {/* Arrow pointing down */}
           <path
             strokeLinecap="round"
             strokeLinejoin="round"

@@ -145,8 +145,6 @@ export default function CrtHero() {
   const [wireVisible, setWireVisible] = useState(false);
   const [wireD,       setWireD]       = useState('');
 
-  // displayText: body lines printed char by char
-  // promptText:  the trailing "Open X? [y]" line
   const [displayText, setDisplayText] = useState('');
   const [promptText,  setPromptText]  = useState('');
 
@@ -320,11 +318,6 @@ export default function CrtHero() {
     return () => window.removeEventListener('keydown', onKeyDown);
   }, [router]);
 
-  // ── Mount reset ────────────────────────────────────────────────────────────
-  // When CrtHero mounts (including returning from another page), reset all
-  // wire state in context so stale pluggedLabel / hoveredLabel from a previous
-  // session don't bleed through into the port glow, power LED, or jack colors.
-  // This runs once on mount — empty dep array is intentional.
   useEffect(() => {
     pluggedSnap.current = null;
     activeLabel.current = null;
@@ -336,11 +329,8 @@ export default function CrtHero() {
     setWireD('');
     setDisplayText('');
     setPromptText('');
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Boot idle text — runs after mount reset because both are mount effects,
-  // but printLines is stable so ordering is consistent.
   useEffect(() => {
     printLines(IDLE_LINES);
     return () => { if (printTimer.current) clearTimeout(printTimer.current); };
@@ -599,10 +589,8 @@ export default function CrtHero() {
             <div className="crt-screen">
               <div className="crt-terminal">
 
-                {/* Body text — printed char by char */}
                 <span className="crt-terminal-text">{displayText}</span>
 
-                {/* Prompt line — appears after body finishes, only when plugged */}
                 {promptText && (
                   <span className="crt-prompt">
                     {promptText.includes('[y]') ? (
