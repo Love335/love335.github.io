@@ -1,0 +1,88 @@
+'use client';
+
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useRef,
+  useState,
+} from 'react';
+
+interface WireContextValue {
+  pluggedLabel: string | null;
+  hoveredLabel: string | null;
+  setPluggedLabel: (label: string | null) => void;
+  setHoveredLabel: (label: string | null) => void;
+  registerJack: (label: string, el: HTMLElement | null) => void;
+  getJackCenter: (label: string) => { x: number; y: number } | null;
+  getAllJacks: () => Map<string, HTMLElement>;
+  // CrtHero registers this so NavbarJack can hand off a pointerdown to the
+  // drag system — enabling "pull from socket to unplug" interactions.
+  registerPlugPointerDown: (fn: ((e: PointerEvent) => void) | null) => void;
+  onPlugPointerDown: (e: PointerEvent) => void;
+}
+
+const WireContext = createContext<WireContextValue | null>(null);
+
+export function WireProvider({ children }: { children: React.ReactNode }) {
+  const [pluggedLabel, setPluggedLabel] = useState<string | null>(null);
+  const [hoveredLabel, setHoveredLabel] = useState<string | null>(null);
+  const jackEls = useRef<Map<string, HTMLElement>>(new Map());
+  // Holds the drag-start handler registered by CrtHero
+  const plugPointerDownFn = useRef<((e: PointerEvent) => void) | null>(null);
+
+  const registerJack = useCallback(
+    (label: string, el: HTMLElement | null) => {
+      if (el) jackEls.current.set(label, el);
+      else jackEls.current.delete(label);
+    },
+    []
+  );
+
+  const getJackCenter = useCallback(
+    (label: string): { x: number; y: number } | null => {
+      const el = jackEls.current.get(label);
+      if (!el) return null;
+      const r = el.getBoundingClientRect();
+      return { x: r.left + r.width / 2, y: r.top + r.height / 2 };
+    },
+    []
+  );
+
+  const getAllJacks = useCallback(() => jackEls.current, []);
+
+  const registerPlugPointerDown = useCallback(
+    (fn: ((e: PointerEvent) => void) | null) => {
+      plugPointerDownFn.current = fn;
+    },
+    []
+  );
+
+  const onPlugPointerDown = useCallback((e: PointerEvent) => {
+    plugPointerDownFn.current?.(e);
+  }, []);
+
+  return (
+    <WireContext.Provider
+      value={{
+        pluggedLabel,
+        hoveredLabel,
+        setPluggedLabel,
+        setHoveredLabel,
+        registerJack,
+        getJackCenter,
+        getAllJacks,
+        registerPlugPointerDown,
+        onPlugPointerDown,
+      }}
+    >
+      {children}
+    </WireContext.Provider>
+  );
+}
+
+export function useWire() {
+  const ctx = useContext(WireContext);
+  if (!ctx) throw new Error('useWire must be used inside <WireProvider>');
+  return ctx;
+}
