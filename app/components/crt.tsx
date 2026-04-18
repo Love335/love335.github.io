@@ -24,7 +24,7 @@ const PROJECTS: Record<string, string[]> = {
     '→ gets things done',
     '→ focused and determined',
     '',
-    'INTERESTS: systems, code, UI/UX, IT, twin peaks',
+    'INTERESTS: systems, code, UI/UX, IT, twin peaks, owls',
     'LOCATION: malm%C3%83%C2%B6',
     '',
   ],
@@ -106,14 +106,21 @@ const PROJECTS: Record<string, string[]> = {
 };
 
 const IDLE_LINES = [
-  'PORTFOLIO-1 v2.4 ready.',
+  'PORTFOWLIO-1 v2.4 ready.',
   '',
   'No signal detected.',
   '',
   '→ connect wire to port',
-  '  above to load output.',
+  ' above to load output.',
   '→ or click icons for more',
-  '  info.',
+  ' info.                              ,___,',
+  '                                   /(6 6)\\_',
+  '                                  /\\` \' `\'\\\\_',
+  '                                  \\\\\\_\\\'\\\'|\\\\\\',
+  '                                  )\\\\\\\\\'\'//||/',
+  '                             ._,--/////""----|--------',
+  '                                            `|',
+  '                                             |',
 ];
 
 interface Vec2 { x: number; y: number }
@@ -320,11 +327,6 @@ export default function CrtHero() {
     return () => window.removeEventListener('keydown', onKeyDown);
   }, [router]);
 
-  // ── Mount reset ────────────────────────────────────────────────────────────
-  // When CrtHero mounts (including returning from another page), reset all
-  // wire state in context so stale pluggedLabel / hoveredLabel from a previous
-  // session don't bleed through into the port glow, power LED, or jack colors.
-  // This runs once on mount — empty dep array is intentional.
   useEffect(() => {
     pluggedSnap.current = null;
     activeLabel.current = null;
@@ -336,11 +338,8 @@ export default function CrtHero() {
     setWireD('');
     setDisplayText('');
     setPromptText('');
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Boot idle text — runs after mount reset because both are mount effects,
-  // but printLines is stable so ordering is consistent.
   useEffect(() => {
     printLines(IDLE_LINES);
     return () => { if (printTimer.current) clearTimeout(printTimer.current); };
@@ -350,12 +349,9 @@ export default function CrtHero() {
     <>
       <style>{`
         .crt-hero {
-          min-height: calc(100vh - 56px);
           display: flex;
           align-items: center;
           justify-content: center;
-          background: #8f5e32;
-          overflow: hidden;
         }
 
         .crt-monitor {
@@ -599,10 +595,8 @@ export default function CrtHero() {
             <div className="crt-screen">
               <div className="crt-terminal">
 
-                {/* Body text — printed char by char */}
                 <span className="crt-terminal-text">{displayText}</span>
 
-                {/* Prompt line — appears after body finishes, only when plugged */}
                 {promptText && (
                   <span className="crt-prompt">
                     {promptText.includes('[y]') ? (
@@ -624,7 +618,7 @@ export default function CrtHero() {
 
           <div className="crt-chin">
             <div className={`crt-power-led${pluggedLabel ? ' on' : ''}`} />
-            <div className="crt-brand">PORTFOLIO-1</div>
+            <div className="crt-brand">PORTFOWLIO-1</div>
             <div className="crt-vents">
               {Array.from({ length: 10 }).map((_, i) => (
                 <div key={i} className="crt-vent" />

@@ -343,10 +343,6 @@ const randomContacts = [
             </div>
           </div>
         </div>
-
-        <div className="text-center mt-16 text-[var(--about-muted)] text-xs font-mono tracking-widest">
-          BUILT WITH NEXT.JS • TAILWIND • REACT • TYPESCRIPT
-        </div>
       </div>
     </div>
   );
