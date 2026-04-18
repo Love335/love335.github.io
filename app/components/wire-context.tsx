@@ -16,8 +16,8 @@ interface WireContextValue {
   registerJack: (label: string, el: HTMLElement | null) => void;
   getJackCenter: (label: string) => { x: number; y: number } | null;
   getAllJacks: () => Map<string, HTMLElement>;
-  // CrtHero registers this so NavbarJack can hand off a pointerdown to the
-  // drag system — enabling "pull from socket to unplug" interactions.
+  // CrtHero registers this so NavbarJack can hand a pointerdown to the drag
+  // system — enabling "pull from socket to unplug" interactions.
   registerPlugPointerDown: (fn: ((e: PointerEvent) => void) | null) => void;
   onPlugPointerDown: (e: PointerEvent) => void;
 }
@@ -28,7 +28,6 @@ export function WireProvider({ children }: { children: React.ReactNode }) {
   const [pluggedLabel, setPluggedLabel] = useState<string | null>(null);
   const [hoveredLabel, setHoveredLabel] = useState<string | null>(null);
   const jackEls = useRef<Map<string, HTMLElement>>(new Map());
-  // Holds the drag-start handler registered by CrtHero
   const plugPointerDownFn = useRef<((e: PointerEvent) => void) | null>(null);
 
   const registerJack = useCallback(
@@ -59,6 +58,16 @@ export function WireProvider({ children }: { children: React.ReactNode }) {
   );
 
   const onPlugPointerDown = useCallback((e: PointerEvent) => {
+    // Schedule a one-shot click suppressor on the capture phase.
+    // This prevents the pointerdown → drag → pointerup sequence from
+    // synthesising a click on the <Link> underneath when the user releases.
+    const suppressClick = (clickEvent: MouseEvent) => {
+      clickEvent.preventDefault();
+      clickEvent.stopPropagation();
+      window.removeEventListener('click', suppressClick, true);
+    };
+    window.addEventListener('click', suppressClick, true);
+
     plugPointerDownFn.current?.(e);
   }, []);
 

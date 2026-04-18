@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useRef } from 'react';
 import { useWire } from './wire-context';
 
@@ -11,12 +11,14 @@ const navItems = [
     label: 'About Me',
     href: '/about',
     accentColor: 'bg-rose-600 hover:bg-rose-700',
+    activeColor: 'bg-rose-600',
     emoji: '👤',
   },
   {
     label: 'Beatnik',
     href: '/beatnik',
     accentColor: 'bg-[#1e3a8a] hover:bg-[#1e40af]',
+    activeColor: 'bg-[#1e3a8a]',
     icon: '/icons/icon_beatnik.png',
     type: 'beatnik',
   },
@@ -24,6 +26,7 @@ const navItems = [
     label: 'BreakEven',
     href: '/breakeven',
     accentColor: 'bg-emerald-600 hover:bg-emerald-700',
+    activeColor: 'bg-emerald-600',
     icon: '/icons/icon_breakeven.png',
     type: 'breakeven',
   },
@@ -31,6 +34,7 @@ const navItems = [
     label: 'Bonsai',
     href: '/bonsai',
     accentColor: 'bg-green-600 hover:bg-green-700',
+    activeColor: 'bg-green-600',
     icon: '/icons/icon_bonsai.png',
     type: 'bonsai',
   },
@@ -38,12 +42,14 @@ const navItems = [
     label: 'Local Hero',
     href: '/localhero',
     accentColor: 'bg-sky-600 hover:bg-sky-700',
+    activeColor: 'bg-sky-600',
     emoji: '🌍',
   },
   {
     label: 'uConsole',
     href: '/uconsole',
     accentColor: 'bg-slate-700 hover:bg-slate-800',
+    activeColor: 'bg-slate-700',
     emoji: '🖥️',
   },
 ];
@@ -53,7 +59,6 @@ function NavbarJack({ label, visibleOnHome }: { label: string; visibleOnHome: bo
   const { registerJack, pluggedLabel, hoveredLabel, onPlugPointerDown } = useWire();
   const ref = useRef<HTMLDivElement>(null);
 
-  // Always register the ref so getJackCenter works regardless of page.
   useEffect(() => {
     registerJack(label, ref.current);
     return () => registerJack(label, null);
@@ -62,12 +67,10 @@ function NavbarJack({ label, visibleOnHome }: { label: string; visibleOnHome: bo
   const isPlugged = pluggedLabel === label;
   const isHovered = hoveredLabel === label;
 
-  // When plugged in and the user presses down on this socket, hand the
-  // pointer event to CrtHero's drag system so they can pull the wire out.
   const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
     if (!isPlugged || !visibleOnHome) return;
     e.preventDefault();
-    e.stopPropagation(); // don't trigger the parent <Link>
+    e.stopPropagation();
     onPlugPointerDown(e.nativeEvent);
   };
 
@@ -85,8 +88,6 @@ function NavbarJack({ label, visibleOnHome }: { label: string; visibleOnHome: bo
         height: '16px',
         borderRadius: '50%',
         zIndex: 20,
-        // Hidden on non-home pages but still in the DOM for ref registration.
-        // visibility keeps getBoundingClientRect returning real coords.
         visibility: visibleOnHome ? 'visible' : 'hidden',
         pointerEvents: visibleOnHome ? 'auto' : 'none',
         transition: 'border-color 0.15s, background 0.15s, box-shadow 0.15s, transform 0.15s',
@@ -102,7 +103,8 @@ function NavbarJack({ label, visibleOnHome }: { label: string; visibleOnHome: bo
 // ─── Navbar ──────────────────────────────────────────────────────────────────
 export default function Navbar() {
   const pathname = usePathname();
-  const isHome = pathname === '/';
+  const router   = useRouter();
+  const isHome   = pathname === '/';
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-background border-b border-border">
@@ -110,6 +112,55 @@ export default function Navbar() {
         {navItems.map((item) => {
           const isActive = pathname === item.href;
 
+          // ── Active slot → backspace button ──────────────────────────────
+          // On any non-home page, the currently active nav item is replaced
+          // with a ← button that returns to the landing page.
+          if (isActive) {
+            return (
+              <button
+                key={item.href}
+                onClick={() => router.push('/')}
+                aria-label="Back to home"
+                title="Back to home"
+                className={`
+                  flex-1 flex items-center justify-center relative
+                  transition-all duration-200
+                  ${item.activeColor}
+                  ring-2 ring-white ring-inset shadow-inner
+                  hover:brightness-110
+                  cursor-pointer
+                `}
+              >
+                {/* Backspace arrow — clean, unambiguous */}
+                <svg
+                  width="22"
+                  height="16"
+                  viewBox="0 0 22 16"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  aria-hidden="true"
+                >
+                  {/* Arrow shaft + head */}
+                  <path
+                    d="M21 8H3M3 8L8 3M3 8L8 13"
+                    stroke="white"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                  {/* Vertical strike — makes it read as backspace not just back */}
+                  <line
+                    x1="1" y1="2" x2="1" y2="14"
+                    stroke="white"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                  />
+                </svg>
+              </button>
+            );
+          }
+
+          // ── Normal slot → Link ──────────────────────────────────────────
           return (
             <Link
               key={item.href}
@@ -119,7 +170,6 @@ export default function Navbar() {
                 flex-1 flex items-center justify-center relative
                 transition-all duration-200
                 ${item.accentColor}
-                ${isActive ? 'ring-2 ring-white ring-inset shadow-inner' : ''}
                 hover:brightness-110
               `}
             >

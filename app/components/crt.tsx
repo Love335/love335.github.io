@@ -1,99 +1,106 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { useWire } from './wire-context';
 
-// ─── Project terminal lines ───────────────────────────────────────────────────
-// Keys must match the `label` strings in navItems exactly.
+const PROJECT_HREFS: Record<string, string> = {
+  'About Me':    '/about',
+  Beatnik:       '/beatnik',
+  BreakEven:     '/breakeven',
+  Bonsai:        '/bonsai',
+  'Local Hero':  '/localhero',
+  uConsole:      '/uconsole',
+};
+
 const PROJECTS: Record<string, string[]> = {
   'About Me': [
     'LOADING PROFILE...',
     '',
-    'USER: portfolio_owner',
+    'USER: love_sk%C3%83%C2%B6n',
     'STATUS: available for work',
     '',
-    '→ designer, developer, builder',
-    '→ obsessed with interaction',
-    '→ making things feel alive',
+    '→ systems developer, full-stack developer',
+    '→ gets things done',
+    '→ sets a high bar',
     '',
-    'INTERESTS: UI/UX, mobile, systems',
-    'LOCATION: [REDACTED]',
+    'INTERESTS: systems, code, UI/UX, IT, twin peaks',
+    'LOCATION: malm%C3%83%C2%B6',
     '',
   ],
   Beatnik: [
     'LOADING BEATNIK.APP...',
     '',
-    'A music app that grooves',
-    'with your rhythm.',
+    'A music app for the common',
+    'folk, easy and accessible.',
     '',
-    'STACK: Swift, SwiftUI',
-    'PLATFORM: iOS',
-    'STATUS: in development',
+    'STACK: Java, JavaFX, CSS',
+    'PLATFORM: Windows, Mac, Linux',
+    'STATUS: finished',
     '',
-    '→ built-in beat sequencer',
-    '→ session recording',
-    '→ share your sessions',
+    '→ OS interaction',
+    '→ uses semaphores',
+    '→ scalable GUI',
     '',
   ],
   BreakEven: [
     'LOADING BREAKEVEN.APP...',
     '',
-    'Financial clarity at a glance.',
-    'Track your runway.',
+    'A blackjack game.',
+    'Make your money back.',
     '',
-    'STACK: React Native',
-    'PLATFORM: iOS + Android',
-    'STATUS: shipped',
+    'STACK: Python, JavaScript, HTML, CSS',
+    'PLATFORM: Browser',
+    'STATUS: sort of finished',
     '',
-    '→ expense tracking',
-    '→ breakeven calculator',
-    '→ cashflow projections',
+    '→ API interaction',
+    '→ JSON interpretation',
+    '→ certifiably entertaining',
     '',
   ],
   Bonsai: [
     'LOADING BONSAI.APP...',
     '',
     'A tamagotchi-style plant',
-    'keeping companion.',
+    'keeping app.',
     '',
-    'STACK: Jetpack Compose',
+    'STACK: Kotlin, Jetpack Compose',
     'PLATFORM: Android',
-    'STATUS: shipped',
+    'STATUS: finished',
     '',
-    '→ plant health tracking',
-    '→ watering reminders',
-    '→ bonsai grows with care',
-    '→ defect diagnosis',
+    '→ emulator technology',
+    '→ SQL database',
+    '→ large CI/CD pipeline',
     '',
   ],
   'Local Hero': [
     'LOADING LOCALHERO.APP...',
     '',
-    'Discover the world around you.',
-    'Support what is local.',
+    'Discover your neighborhood.',
+    'Support sustainability.',
     '',
-    'STACK: Flutter',
-    'PLATFORM: iOS + Android',
+    'STACK: TypeScript, React',
+    'PLATFORM: Browser',
     'STATUS: in development',
     '',
-    '→ local business discovery',
-    '→ community reviews',
-    '→ neighbourhood feed',
+    '→ who can say...',
+    '→ it is not',
+    '→ finished yet',
     '',
   ],
   uConsole: [
     'LOADING UCONSOLE...',
     '',
-    'A pocket-sized computing',
-    'experience. Truly portable.',
+    'A pocket-sized computer.',
+    'Portable and powerful.',
     '',
     'PLATFORM: hardware mod',
-    'STATUS: ongoing build',
+    'STATUS: waiting on components :(',
     '',
     '→ custom Linux environment',
-    '→ handheld form factor',
-    '→ built from scratch',
-    '→ because why not',
+    '→ computer assembly',
+    '→ modified for RTL-SDR, GPS, ETC',
+    '→ supports monitor mode',
     '',
   ],
 };
@@ -105,25 +112,23 @@ const IDLE_LINES = [
   '',
   '→ connect wire to port',
   '  above to load output.',
-  '',
+  '→ or click icons for more',
+  '  info.',
 ];
 
-// ─── Types ────────────────────────────────────────────────────────────────────
 interface Vec2 { x: number; y: number }
 
-// ─── Bezier wire path ─────────────────────────────────────────────────────────
 function makeWirePath(sx: number, sy: number, tx: number, ty: number): string {
   const dist = Math.hypot(tx - sx, ty - sy);
   const sag  = Math.min(dist * 0.3, 80);
   return `M ${sx} ${sy} C ${sx} ${sy + sag}, ${tx} ${ty + sag * 0.35}, ${tx} ${ty}`;
 }
 
-// Extra padding (px) added around each navbar slot's bounding box for hit-testing.
-// Makes it much easier to land the wire in a slot without pixel-perfect aim.
 const HIT_PADDING = 28;
 
-// ─── Component ────────────────────────────────────────────────────────────────
 export default function CrtHero() {
+  const router = useRouter();
+
   const {
     pluggedLabel,
     setPluggedLabel,
@@ -133,30 +138,33 @@ export default function CrtHero() {
     registerPlugPointerDown,
   } = useWire();
 
-  const portRef    = useRef<HTMLDivElement>(null);
-  const isDragging = useRef(false);
+  const portRef     = useRef<HTMLDivElement>(null);
+  const isDragging  = useRef(false);
   const pluggedSnap = useRef<Vec2 | null>(null);
 
   const [wireVisible, setWireVisible] = useState(false);
   const [wireD,       setWireD]       = useState('');
 
+  // displayText: body lines printed char by char
+  // promptText:  the trailing "Open X? [y]" line
   const [displayText, setDisplayText] = useState('');
-  const printTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [promptText,  setPromptText]  = useState('');
 
-  // ── Port center ──────────────────────────────────────────────────────────
+  const awaitingYes = useRef(false);
+  const activeLabel = useRef<string | null>(null);
+  const printTimer  = useRef<ReturnType<typeof setTimeout> | null>(null);
+
   const getPortCenter = useCallback((): Vec2 => {
     const r = portRef.current?.getBoundingClientRect();
     if (!r) return { x: 0, y: 0 };
     return { x: r.left + r.width / 2, y: r.top + r.height / 2 };
   }, []);
 
-  // ── Draw wire ────────────────────────────────────────────────────────────
   const drawTo = useCallback((tx: number, ty: number) => {
     const { x: sx, y: sy } = getPortCenter();
     setWireD(makeWirePath(sx, sy, tx, ty));
   }, [getPortCenter]);
 
-  // ── Hit-test with padding ────────────────────────────────────────────────
   const getSlotAt = useCallback((x: number, y: number): string | null => {
     for (const [label, el] of getAllJacks()) {
       const parent = el.closest('a') ?? el;
@@ -166,22 +174,42 @@ export default function CrtHero() {
         x <= r.right  + HIT_PADDING &&
         y >= r.top    - HIT_PADDING &&
         y <= r.bottom + HIT_PADDING
-      ) {
-        return label;
-      }
+      ) return label;
     }
     return null;
   }, [getAllJacks]);
 
-  // ── Terminal printer ─────────────────────────────────────────────────────
-  const printLines = useCallback((lines: string[]) => {
+  const printLines = useCallback((lines: string[], label: string | null = null) => {
     if (printTimer.current) clearTimeout(printTimer.current);
     setDisplayText('');
+    setPromptText('');
+    awaitingYes.current = false;
 
     let li = 0, ci = 0, built = '';
 
+    function printPrompt(lbl: string) {
+      const prompt = `Open ${lbl}? [y]`;
+      let pi = 0;
+      let pbuilt = '';
+
+      function promptStep() {
+        if (pi < prompt.length) {
+          pbuilt += prompt[pi++];
+          setPromptText(pbuilt);
+          printTimer.current = setTimeout(promptStep, 22 + Math.random() * 10);
+        } else {
+          awaitingYes.current = true;
+        }
+      }
+
+      printTimer.current = setTimeout(promptStep, 300);
+    }
+
     function step() {
-      if (li >= lines.length) return;
+      if (li >= lines.length) {
+        if (label) printPrompt(label);
+        return;
+      }
       const line = lines[li];
       if (ci < line.length) {
         built += line[ci++];
@@ -195,67 +223,63 @@ export default function CrtHero() {
         printTimer.current = setTimeout(step, line === '' ? 30 : 75);
       }
     }
+
     step();
   }, []);
 
-  // ── Plug ─────────────────────────────────────────────────────────────────
   const plugInto = useCallback((label: string) => {
     const snap = getJackCenter(label);
     if (!snap) return;
     pluggedSnap.current = snap;
+    activeLabel.current = label;
     setPluggedLabel(label);
     setWireVisible(true);
     drawTo(snap.x, snap.y);
-    printLines(PROJECTS[label] ?? IDLE_LINES);
+    printLines(PROJECTS[label] ?? IDLE_LINES, label);
   }, [getJackCenter, setPluggedLabel, drawTo, printLines]);
 
-  // ── Unplug ───────────────────────────────────────────────────────────────
   const doUnplug = useCallback(() => {
     pluggedSnap.current = null;
+    activeLabel.current = null;
+    awaitingYes.current = false;
     setPluggedLabel(null);
     setWireVisible(false);
     setWireD('');
+    setPromptText('');
     printLines(IDLE_LINES);
   }, [setPluggedLabel, printLines]);
 
-  // ── Core drag logic (shared between port drag and socket drag) ───────────
   const beginDrag = useCallback((e: PointerEvent, targetEl: HTMLElement) => {
     isDragging.current = true;
-    // Use the element the event actually started on for pointer capture.
-    // This keeps pointermove firing even if the cursor leaves that element.
     targetEl.setPointerCapture(e.pointerId);
 
-    // Detach from any current plug, start wire from port center
     if (pluggedSnap.current) {
       pluggedSnap.current = null;
+      activeLabel.current = null;
+      awaitingYes.current = false;
       setPluggedLabel(null);
+      setPromptText('');
       printLines(IDLE_LINES);
     }
+
     setWireVisible(true);
     drawTo(e.clientX, e.clientY);
   }, [setPluggedLabel, drawTo, printLines]);
 
-  // ── Pointer down on the monitor port ─────────────────────────────────────
   const onPortPointerDown = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
     e.preventDefault();
     beginDrag(e.nativeEvent, e.currentTarget);
   }, [beginDrag]);
 
-  // ── Pointer down on a navbar socket (pull-to-unplug) ─────────────────────
-  // Registered into context so NavbarJack can call it.
   const onSocketPointerDown = useCallback((e: PointerEvent) => {
-    // The event target is the NavbarJack div — use it for pointer capture.
-    const target = e.target as HTMLElement;
-    beginDrag(e, target);
+    beginDrag(e, e.target as HTMLElement);
   }, [beginDrag]);
 
-  // Register the socket handler into context on mount.
   useEffect(() => {
     registerPlugPointerDown(onSocketPointerDown);
     return () => registerPlugPointerDown(null);
   }, [registerPlugPointerDown, onSocketPointerDown]);
 
-  // ── Global pointer move / up ──────────────────────────────────────────────
   useEffect(() => {
     const onMove = (e: PointerEvent) => {
       if (!isDragging.current) return;
@@ -281,13 +305,47 @@ export default function CrtHero() {
     };
   }, [drawTo, getSlotAt, setHoveredLabel, plugInto, doUnplug]);
 
-  // Boot idle text
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (!awaitingYes.current) return;
+      if (e.key !== 'y' && e.key !== 'Y') return;
+      const label = activeLabel.current;
+      if (!label) return;
+      const href = PROJECT_HREFS[label];
+      if (!href) return;
+      router.push(href);
+    };
+
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [router]);
+
+  // ── Mount reset ────────────────────────────────────────────────────────────
+  // When CrtHero mounts (including returning from another page), reset all
+  // wire state in context so stale pluggedLabel / hoveredLabel from a previous
+  // session don't bleed through into the port glow, power LED, or jack colors.
+  // This runs once on mount — empty dep array is intentional.
+  useEffect(() => {
+    pluggedSnap.current = null;
+    activeLabel.current = null;
+    awaitingYes.current = false;
+    isDragging.current  = false;
+    setPluggedLabel(null);
+    setHoveredLabel(null);
+    setWireVisible(false);
+    setWireD('');
+    setDisplayText('');
+    setPromptText('');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Boot idle text — runs after mount reset because both are mount effects,
+  // but printLines is stable so ordering is consistent.
   useEffect(() => {
     printLines(IDLE_LINES);
     return () => { if (printTimer.current) clearTimeout(printTimer.current); };
   }, [printLines]);
 
-  // ── Render ───────────────────────────────────────────────────────────────
   return (
     <>
       <style>{`
@@ -300,7 +358,6 @@ export default function CrtHero() {
           overflow: hidden;
         }
 
-        /* ── Monitor shell ── */
         .crt-monitor {
           position: relative;
           width: 580px;
@@ -317,7 +374,6 @@ export default function CrtHero() {
           user-select: none;
         }
 
-        /* Chunky back-box protrusion */
         .crt-monitor::before {
           content: '';
           position: absolute;
@@ -332,7 +388,6 @@ export default function CrtHero() {
           box-shadow: 4px 4px 0 #636060, 7px 7px 0 #4e4b48;
         }
 
-        /* ── Screen bezel ── */
         .crt-bezel {
           background: #181818;
           border-radius: 5px 5px 3px 3px;
@@ -343,7 +398,6 @@ export default function CrtHero() {
             0 0 0 1px #404040;
         }
 
-        /* ── CRT screen ── */
         .crt-screen {
           width: 496px;
           height: 340px;
@@ -353,7 +407,6 @@ export default function CrtHero() {
           overflow: hidden;
         }
 
-        /* Scanlines overlay */
         .crt-screen::before {
           content: '';
           position: absolute;
@@ -369,7 +422,6 @@ export default function CrtHero() {
           z-index: 5;
         }
 
-        /* Vignette */
         .crt-screen::after {
           content: '';
           position: absolute;
@@ -383,7 +435,6 @@ export default function CrtHero() {
           z-index: 6;
         }
 
-        /* ── Terminal ── */
         .crt-terminal {
           position: absolute;
           inset: 0;
@@ -402,6 +453,17 @@ export default function CrtHero() {
           text-shadow: 0 0 8px rgba(200, 134, 10, 0.55);
         }
 
+        /* Prompt is inline — cursor follows on the same line as [y] */
+        .crt-prompt {
+          text-shadow: 0 0 8px rgba(200, 134, 10, 0.55);
+        }
+
+        /* [y] glows brighter to signal it is interactive */
+        .crt-prompt-y {
+          color: #f0a820;
+          text-shadow: 0 0 10px rgba(240, 168, 32, 0.9);
+        }
+
         .crt-cursor {
           display: inline-block;
           width: 9px;
@@ -417,7 +479,6 @@ export default function CrtHero() {
           50%       { opacity: 0; }
         }
 
-        /* ── Chin bar ── */
         .crt-chin {
           display: flex;
           align-items: center;
@@ -448,19 +509,9 @@ export default function CrtHero() {
           font-weight: 700;
         }
 
-        .crt-vents {
-          display: flex;
-          gap: 3px;
-          align-items: center;
-        }
-        .crt-vent {
-          width: 1.5px;
-          height: 12px;
-          background: #888;
-          border-radius: 1px;
-        }
+        .crt-vents { display: flex; gap: 3px; align-items: center; }
+        .crt-vent  { width: 1.5px; height: 12px; background: #888; border-radius: 1px; }
 
-        /* ── Port — top right of monitor body ── */
         .crt-port {
           position: absolute;
           top: 20px;
@@ -476,8 +527,7 @@ export default function CrtHero() {
           cursor: grab;
           z-index: 40;
           transition: border-color 0.15s, box-shadow 0.15s;
-          box-shadow: 0 2px 8px rgba(0,0,0,0.7),
-                      inset 0 1px 0 rgba(255,255,255,0.08);
+          box-shadow: 0 2px 8px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.08);
           animation: port-blink 800ms infinite alternate ease-in-out;
         }
         .crt-port:hover {
@@ -501,7 +551,6 @@ export default function CrtHero() {
           border: 2px solid #3a3a3a;
         }
 
-        /* ── Wire SVG overlay ── */
         .crt-wire-svg {
           position: fixed;
           inset: 0;
@@ -510,6 +559,7 @@ export default function CrtHero() {
           pointer-events: none;
           z-index: 9999;
         }
+
         @keyframes port-blink {
           from {
             box-shadow: 0 0 12px rgba(200, 134, 10, 0.4),
@@ -523,46 +573,21 @@ export default function CrtHero() {
         }
       `}</style>
 
-      {/* Wire SVG — fixed so it draws over the navbar */}
       <svg className="crt-wire-svg" xmlns="http://www.w3.org/2000/svg">
         {wireVisible && wireD && (
           <>
-            {/* Shadow beneath cable for depth */}
-            <path
-              d={wireD}
-              fill="none"
-              stroke="#0a0a0a"
-              strokeWidth="7"
-              strokeLinecap="round"
-              opacity={0.45}
-            />
-            {/* Main cable body */}
-            <path
-              d={wireD}
-              fill="none"
-              stroke="#2c2c2c"
-              strokeWidth="5"
-              strokeLinecap="round"
-            />
-            {/* Top highlight stripe — gives it a cylindrical feel */}
-            <path
-              d={wireD}
-              fill="none"
-              stroke="#585858"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-            />
+            <path d={wireD} fill="none" stroke="#0a0a0a"  strokeWidth="7"   strokeLinecap="round" opacity={0.45} />
+            <path d={wireD} fill="none" stroke="#2c2c2c"  strokeWidth="5"   strokeLinecap="round" />
+            <path d={wireD} fill="none" stroke="#585858"  strokeWidth="1.5" strokeLinecap="round" />
           </>
         )}
       </svg>
 
-      {/* Hero */}
       <div className="crt-hero">
         <div className="crt-monitor">
 
-          {/* Draggable port — top right */}
           <div
-            className={`crt-port ${pluggedLabel ? 'plugged' : ''}`}
+            className={`crt-port${pluggedLabel ? ' plugged' : ''}`}
             ref={portRef}
             onPointerDown={onPortPointerDown}
             title="drag to connect"
@@ -570,17 +595,33 @@ export default function CrtHero() {
             <div className="crt-port-inner" />
           </div>
 
-          {/* Screen */}
           <div className="crt-bezel">
             <div className="crt-screen">
               <div className="crt-terminal">
+
+                {/* Body text — printed char by char */}
                 <span className="crt-terminal-text">{displayText}</span>
+
+                {/* Prompt line — appears after body finishes, only when plugged */}
+                {promptText && (
+                  <span className="crt-prompt">
+                    {promptText.includes('[y]') ? (
+                      <>
+                        {promptText.slice(0, promptText.indexOf('[y]'))}
+                        <span className="crt-prompt-y">[y]</span>
+                      </>
+                    ) : (
+                      promptText
+                    )}
+                  </span>
+                )}
+
                 <span className="crt-cursor" />
+
               </div>
             </div>
           </div>
 
-          {/* Chin */}
           <div className="crt-chin">
             <div className={`crt-power-led${pluggedLabel ? ' on' : ''}`} />
             <div className="crt-brand">PORTFOLIO-1</div>
