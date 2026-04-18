@@ -133,7 +133,7 @@ function makeWirePath(sx: number, sy: number, tx: number, ty: number): string {
 
 const HIT_PADDING = 28;
 
-export default function CrtHero() {
+export default function Crt() {
   const router = useRouter();
 
   const {
@@ -235,13 +235,14 @@ export default function CrtHero() {
   }, []);
 
   const plugInto = useCallback((label: string) => {
-    const snap = getJackCenter(label);
+    const snap = getJackCenter(label); // doc coords
     if (!snap) return;
     pluggedSnap.current = snap;
     activeLabel.current = label;
     setPluggedLabel(label);
     setWireVisible(true);
-    drawTo(snap.x, snap.y);
+    // snap.y is doc space; subtract scroll to get viewport y
+    drawTo(snap.x, snap.y - window.scrollY);
     printLines(PROJECTS[label] ?? IDLE_LINES, label);
   }, [getJackCenter, setPluggedLabel, drawTo, printLines]);
 
@@ -270,12 +271,13 @@ export default function CrtHero() {
     }
 
     setWireVisible(true);
-    drawTo(e.clientX, e.clientY);
+    drawTo(e.clientX, e.clientY); // plain, no scroll offset
   }, [setPluggedLabel, drawTo, printLines]);
 
   const onPortPointerDown = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
     e.preventDefault();
     beginDrag(e.nativeEvent, e.currentTarget);
+    // beginDrag calls drawTo — update it to pass scroll-adjusted coords:
   }, [beginDrag]);
 
   const onSocketPointerDown = useCallback((e: PointerEvent) => {
@@ -290,7 +292,7 @@ export default function CrtHero() {
   useEffect(() => {
     const onMove = (e: PointerEvent) => {
       if (!isDragging.current) return;
-      drawTo(e.clientX, e.clientY);
+      drawTo(e.clientX, e.clientY); // back to plain clientX/Y
       setHoveredLabel(getSlotAt(e.clientX, e.clientY));
     };
 
@@ -298,8 +300,7 @@ export default function CrtHero() {
       if (!isDragging.current) return;
       isDragging.current = false;
       setHoveredLabel(null);
-
-      const hit = getSlotAt(e.clientX, e.clientY);
+      const hit = getSlotAt(e.clientX, e.clientY); // stays viewport-relative
       if (hit) plugInto(hit);
       else doUnplug();
     };
@@ -344,6 +345,31 @@ export default function CrtHero() {
     printLines(IDLE_LINES);
     return () => { if (printTimer.current) clearTimeout(printTimer.current); };
   }, [printLines]);
+
+  const scrollY = useRef(0);
+
+  useEffect(() => {
+    const onScroll = () => {
+      scrollY.current = window.scrollY;
+      if (!pluggedLabel) return;
+      const snap = getJackCenter(pluggedLabel); // still returns doc coords
+      if (!snap) return;
+      pluggedSnap.current = snap;
+      // Convert both endpoints to viewport space for drawing
+      const port = getPortCenter();
+      const ty = snap.y - scrollY.current;
+      setWireD(makeWirePath(port.x, port.y, snap.x, ty));
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, [pluggedLabel, getJackCenter, getPortCenter]);
+
+  useEffect(() => {
+    document.documentElement.style.overscrollBehaviorY = 'none';
+    return () => {
+      document.documentElement.style.overscrollBehaviorY = '';
+    };
+  }, []);
 
   return (
     <>

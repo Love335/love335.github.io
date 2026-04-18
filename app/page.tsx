@@ -1,5 +1,6 @@
 import Link from 'next/link';
-import CrtHero from './components/crt';
+import Crt from './components/crt';
+import CorkboardGallery from './components/corkboard-gallery';
 
 export default function Home() {
   return (
@@ -41,7 +42,7 @@ export default function Home() {
               justifyContent: 'center',
             }}
           >
-            <CrtHero />
+            <Crt />
           </div>
 
           <div
@@ -134,6 +135,8 @@ export default function Home() {
           </div>
         </div>
       </div>
+
+      <CorkboardGallery />
 
       <div
         className="text-center text-xs font-mono tracking-widest"

@@ -15,7 +15,6 @@ export default function SkillsTable({
 
         <thead>
           <tr className={`border-b ${theme.skills.border}`}>
-            {/* 👇 COLUMN HEADERS = REGULAR TEXT */}
             <th className={`px-8 py-5 text-left text-sm font-medium uppercase tracking-widest ${theme.skills.headerText}`}>
               Category
             </th>
@@ -29,12 +28,10 @@ export default function SkillsTable({
           {skills.map((row, index) => (
             <tr key={index} className={`transition-colors ${theme.skills.rowHover}`}>
               
-              {/* 👇 CATEGORY = HEADING */}
               <td className={`px-8 py-6 font-medium whitespace-nowrap ${theme.skills.categoryText}`}>
                 {row.category}
               </td>
 
-              {/* 👇 ITEMS = REGULAR */}
               <td className={`px-8 py-6 ${theme.skills.itemsText}`}>
                 {row.items}
               </td>

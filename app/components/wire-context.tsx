@@ -37,13 +37,16 @@ export function WireProvider({ children }: { children: React.ReactNode }) {
     },
     []
   );
-
+  
   const getJackCenter = useCallback(
     (label: string): { x: number; y: number } | null => {
       const el = jackEls.current.get(label);
       if (!el) return null;
       const r = el.getBoundingClientRect();
-      return { x: r.left + r.width / 2, y: r.top + r.height / 2 };
+      return {
+        x: r.left + r.width  / 2 + window.scrollX,
+        y: r.top  + r.height / 2 + window.scrollY,
+      };
     },
     []
   );

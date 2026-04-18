@@ -33,7 +33,6 @@ export default function Collaborators({
               />
             </div>
 
-            {/* 👇 NAME = HEADING COLOR */}
             <p className={`font-medium ${theme.collaborators.name}`}>
               {person.name}
             </p>

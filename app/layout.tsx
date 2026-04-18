@@ -23,12 +23,6 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${jakarta.variable} antialiased`}>
       <body className="bg-background text-foreground font-sans min-h-screen">
-        {/*
-          WireProvider must wrap both Navbar and children so they share
-          the same pluggedLabel / hoveredLabel / jack-registration state.
-          It is a client component but layout.tsx itself stays a server component —
-          Next.js handles this correctly.
-        */}
         <WireProvider>
           <Navbar />
           <main className="pt-12">
