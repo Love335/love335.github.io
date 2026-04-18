@@ -22,7 +22,7 @@ const PROJECTS: Record<string, string[]> = {
     '',
     '→ systems developer, full-stack developer',
     '→ gets things done',
-    '→ sets a high bar',
+    '→ focused and determined',
     '',
     'INTERESTS: systems, code, UI/UX, IT, twin peaks',
     'LOCATION: malm%C3%83%C2%B6',
@@ -51,12 +51,12 @@ const PROJECTS: Record<string, string[]> = {
     '',
     'STACK: Python, JavaScript, HTML, CSS',
     'PLATFORM: Browser',
-    'STATUS: sort of finished',
+    'STATUS: on indefinite hold',
     '',
     '→ API interaction',
     '→ JSON interpretation',
-    '→ certifiably entertaining',
-    '',
+    '→ addicting (though not',
+    '  as much as gambling)',
   ],
   Bonsai: [
     'LOADING BONSAI.APP...',
@@ -145,6 +145,8 @@ export default function CrtHero() {
   const [wireVisible, setWireVisible] = useState(false);
   const [wireD,       setWireD]       = useState('');
 
+  // displayText: body lines printed char by char
+  // promptText:  the trailing "Open X? [y]" line
   const [displayText, setDisplayText] = useState('');
   const [promptText,  setPromptText]  = useState('');
 
@@ -318,6 +320,11 @@ export default function CrtHero() {
     return () => window.removeEventListener('keydown', onKeyDown);
   }, [router]);
 
+  // ── Mount reset ────────────────────────────────────────────────────────────
+  // When CrtHero mounts (including returning from another page), reset all
+  // wire state in context so stale pluggedLabel / hoveredLabel from a previous
+  // session don't bleed through into the port glow, power LED, or jack colors.
+  // This runs once on mount — empty dep array is intentional.
   useEffect(() => {
     pluggedSnap.current = null;
     activeLabel.current = null;
@@ -329,8 +336,11 @@ export default function CrtHero() {
     setWireD('');
     setDisplayText('');
     setPromptText('');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Boot idle text — runs after mount reset because both are mount effects,
+  // but printLines is stable so ordering is consistent.
   useEffect(() => {
     printLines(IDLE_LINES);
     return () => { if (printTimer.current) clearTimeout(printTimer.current); };
@@ -418,7 +428,7 @@ export default function CrtHero() {
           inset: 0;
           background: radial-gradient(
             ellipse at 50% 50%,
-            transparent 40%,
+            transparent 62%,
             rgba(0,0,0,0.6) 100%
           );
           pointer-events: none;
@@ -432,7 +442,7 @@ export default function CrtHero() {
           font-family: 'Courier New', Courier, monospace;
           font-size: 14px;
           line-height: 1.6;
-          color: #c8860a;
+          color: #d4920f;
           white-space: pre-wrap;
           word-break: break-all;
           overflow: hidden;
@@ -440,12 +450,12 @@ export default function CrtHero() {
         }
 
         .crt-terminal-text {
-          text-shadow: 0 0 8px rgba(200, 134, 10, 0.55);
+          text-shadow: 0 0 8px rgba(200, 134, 10, 0.75);
         }
 
         /* Prompt is inline — cursor follows on the same line as [y] */
         .crt-prompt {
-          text-shadow: 0 0 8px rgba(200, 134, 10, 0.55);
+          text-shadow: 0 0 8px rgba(200, 134, 10, 0.75);
         }
 
         /* [y] glows brighter to signal it is interactive */
@@ -589,8 +599,10 @@ export default function CrtHero() {
             <div className="crt-screen">
               <div className="crt-terminal">
 
+                {/* Body text — printed char by char */}
                 <span className="crt-terminal-text">{displayText}</span>
 
+                {/* Prompt line — appears after body finishes, only when plugged */}
                 {promptText && (
                   <span className="crt-prompt">
                     {promptText.includes('[y]') ? (
