@@ -19,7 +19,7 @@ export default function Home() {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          padding: 'clamp(48px, 8vh, 160px) clamp(40px, 8vw, 200px)',
+          padding: 'clamp(48px, 8vh, 280px) clamp(40px, 8vw, 350px)',
         }}
       >
         <div
