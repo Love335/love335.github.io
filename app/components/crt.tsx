@@ -55,8 +55,8 @@ const PROJECTS: Record<string, string[]> = {
     '',
     '→ API interaction',
     '→ JSON interpretation',
-    '→ addicting (though not',
-    '  as much as gambling)',
+    '→ addicting (though less than gambling)',
+    '',
   ],
   Bonsai: [
     'LOADING BONSAI.APP...',
