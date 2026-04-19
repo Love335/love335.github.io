@@ -77,8 +77,8 @@ function BeatnikContent() {
                 Living Waveform
               </h2>
               <p className={`${theme.text.body} leading-relaxed`}>
-                Watch your sound move, linked to the actual audio output, changing as you
-                tweak the levels in real-time.
+                Watch your sound move, data cached at app start to 
+                minimize computing costs.
               </p>
             </div>
           </div>

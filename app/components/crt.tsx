@@ -152,8 +152,6 @@ export default function Crt() {
   const [wireVisible, setWireVisible] = useState(false);
   const [wireD,       setWireD]       = useState('');
 
-  // displayText: body lines printed char by char
-  // promptText:  the trailing "Open X? [y]" line
   const [displayText, setDisplayText] = useState('');
   const [promptText,  setPromptText]  = useState('');
 
@@ -235,13 +233,12 @@ export default function Crt() {
   }, []);
 
   const plugInto = useCallback((label: string) => {
-    const snap = getJackCenter(label); // doc coords
+    const snap = getJackCenter(label);
     if (!snap) return;
     pluggedSnap.current = snap;
     activeLabel.current = label;
     setPluggedLabel(label);
     setWireVisible(true);
-    // snap.y is doc space; subtract scroll to get viewport y
     drawTo(snap.x, snap.y - window.scrollY);
     printLines(PROJECTS[label] ?? IDLE_LINES, label);
   }, [getJackCenter, setPluggedLabel, drawTo, printLines]);
@@ -271,13 +268,12 @@ export default function Crt() {
     }
 
     setWireVisible(true);
-    drawTo(e.clientX, e.clientY); // plain, no scroll offset
+    drawTo(e.clientX, e.clientY);
   }, [setPluggedLabel, drawTo, printLines]);
 
   const onPortPointerDown = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
     e.preventDefault();
     beginDrag(e.nativeEvent, e.currentTarget);
-    // beginDrag calls drawTo — update it to pass scroll-adjusted coords:
   }, [beginDrag]);
 
   const onSocketPointerDown = useCallback((e: PointerEvent) => {
@@ -292,7 +288,7 @@ export default function Crt() {
   useEffect(() => {
     const onMove = (e: PointerEvent) => {
       if (!isDragging.current) return;
-      drawTo(e.clientX, e.clientY); // back to plain clientX/Y
+      drawTo(e.clientX, e.clientY);
       setHoveredLabel(getSlotAt(e.clientX, e.clientY));
     };
 
@@ -300,7 +296,7 @@ export default function Crt() {
       if (!isDragging.current) return;
       isDragging.current = false;
       setHoveredLabel(null);
-      const hit = getSlotAt(e.clientX, e.clientY); // stays viewport-relative
+      const hit = getSlotAt(e.clientX, e.clientY);
       if (hit) plugInto(hit);
       else doUnplug();
     };
@@ -352,10 +348,9 @@ export default function Crt() {
     const onScroll = () => {
       scrollY.current = window.scrollY;
       if (!pluggedLabel) return;
-      const snap = getJackCenter(pluggedLabel); // still returns doc coords
+      const snap = getJackCenter(pluggedLabel);
       if (!snap) return;
       pluggedSnap.current = snap;
-      // Convert both endpoints to viewport space for drawing
       const port = getPortCenter();
       const ty = snap.y - scrollY.current;
       setWireD(makeWirePath(port.x, port.y, snap.x, ty));

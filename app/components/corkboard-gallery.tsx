@@ -30,7 +30,6 @@ export default function CorkboardGallery() {
 
   return (
     <>
-      {/* ── Corkboard ── */}
       <div style={styles.cork}>
         <div style={styles.grid}>
           {PHOTOS.map((photo, i) => (
@@ -46,7 +45,6 @@ export default function CorkboardGallery() {
               onKeyDown={(e) => e.key === 'Enter' && setSelected(photo)}
               aria-label={`View ${photo.label}`}
             >
-              {/* Pin */}
               <div style={styles.pin}>
                 <div
                   style={{
@@ -57,10 +55,8 @@ export default function CorkboardGallery() {
                 <div style={styles.pinNeedle} />
               </div>
 
-              {/* Polaroid card */}
               <div style={styles.polaroid}>
                 <div style={styles.photoArea}>
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={photo.src}
                     alt={photo.label}
@@ -77,7 +73,6 @@ export default function CorkboardGallery() {
         </div>
       </div>
 
-      {/* ── Lightbox ── */}
       {selected && (
         <div
           style={styles.lightboxBackdrop}
@@ -92,7 +87,6 @@ export default function CorkboardGallery() {
           >
             <div style={styles.lbPolaroid}>
               <div style={styles.lbPhotoArea}>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={selected.src}
                   alt={selected.label}

@@ -22,7 +22,6 @@ export default function Home() {
           padding: '48px 40px',
         }}
       >
-        {/* ── Two-column grid — fixed max-width, centered on page ── */}
         <div
           style={{
             display: 'grid',
