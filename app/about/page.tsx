@@ -175,26 +175,25 @@ const randomContacts = [
               write code, fix your printer, or whatever else you might need.
             </p>
           </div>
-
-          <div className="md:col-span-5 flex justify-center md:justify-end">
-            <div className="w-full max-w-[380px] aspect-square rounded-3xl overflow-hidden p-3 shadow-2xl bg-gradient-to-br from-[var(--about-surface)] to-[var(--about-surface-elevated)] border border-[var(--about-border)]">
-              <div className="group relative w-full h-full rounded-2xl overflow-hidden">
-                <Image
-                  src="/collaborators/love_skon.jpg"
-                  alt="Love Skön"
-                  fill
-                  className="object-cover transition-all duration-500 group-hover:blur-[2px]"                  
-                  priority
-                />
-                <div className="absolute left-0 right-0 -bottom-4 h-16 opacity-0 group-hover:opacity-100 transition-all duration-300 rounded-xl overflow-hidden">                  
-                  <div
-                    className="w-full h-full bg-contain bg-no-repeat bg-center"
-                    style={{ backgroundImage: "url('/unregistered_hypercam.png')" }}
+            <div className="md:col-span-5 flex justify-center md:justify-end">
+              <div className="w-full max-w-[380px] aspect-square rounded-3xl overflow-hidden p-3 shadow-2xl bg-gradient-to-br from-[var(--about-surface)] to-[var(--about-surface-elevated)] border border-[var(--about-border)]">
+                <div className="group relative w-full h-full rounded-2xl overflow-hidden">
+                  <Image
+                    src="/collaborators/love_skon.jpg"
+                    alt="Love Skön"
+                    fill
+                    className="object-cover transition-all duration-500 group-hover:blur-[2px]"
+                    priority
                   />
+                  <div className="absolute -top-20 left-0 w-43 h-43 opacity-0 group-hover:opacity-100 transition-all duration-300 rounded-xl overflow-hidden group-hover:blur-[1px]">
+                    <div
+                      className="w-full h-full bg-contain bg-no-repeat bg-center"
+                      style={{ backgroundImage: "url('/unregistered_hypercam.png')" }}
+                    />
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
         </div>
 
         <div className="mb-24">
