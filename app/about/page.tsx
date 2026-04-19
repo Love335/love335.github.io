@@ -199,7 +199,7 @@ const randomContacts = [
         <div className="mb-24">
           <div className="grid md:grid-cols-12 gap-8">
             <div className="md:col-span-7">
-              <div className={`${theme.surfaces.card} rounded-3xl p-10 md:p-12 shadow-2xl h-full transition-all hover:-translate-y-1 hover:shadow-2xl`}>                
+              <div className={`${theme.surfaces.card} rounded-3xl p-10 md:p-12 shadow-xl h-full transition-all hover:-translate-y-1 hover:shadow-2xl`}>                
                 <h2 className={`${theme.text.sectionTitle} text-4xl font-semibold mb-8 tracking-[-1px]`}>About Me</h2>
                 <div className={`${theme.text.body} text-[21px] leading-relaxed space-y-8`}>
                   <p>Second-year student of Systems Development at Malmö University, with skills in programming and integrated systems. My primary experiences are listed below, but I&apos;m always looking to learn new techniques.</p>
@@ -210,7 +210,7 @@ const randomContacts = [
             </div>
 
             <div className="md:col-span-5 space-y-8">
-              <div className={`${theme.surfaces.card} rounded-3xl p-8 transition-all hover:-translate-y-1 hover:shadow-2xl`}>
+              <div className={`${theme.surfaces.card} rounded-3xl p-8 shadow-xl transition-all hover:-translate-y-1 hover:shadow-2xl`}>
                 <div className="flex justify-between items-start mb-6">
                   <div>
                     <span className="px-4 py-1.5 bg-[var(--about-primary)] text-[var(--about-highlight)] text-sm font-mono rounded-2xl">BACHELOR&apos;S</span>
@@ -222,7 +222,7 @@ const randomContacts = [
                 <p className={`${theme.text.body} text-lg`}>Focused on programming, integrated systems, software architecture, and real-world development practices.</p>
               </div>
 
-              <div className={`${theme.surfaces.card} rounded-3xl p-8 transition-all hover:-translate-y-1 hover:shadow-2xl`}>
+              <div className={`${theme.surfaces.card} rounded-3xl p-8 shadow-xl transition-all hover:-translate-y-1 hover:shadow-2xl`}>
                 <div className="flex justify-between items-start mb-6">
                   <div>
                     <span className="px-4 py-1.5 bg-[var(--about-accent)] text-[var(--about-6)] text-sm font-mono rounded-2xl">UPPER SECONDARY</span>
@@ -249,7 +249,7 @@ const randomContacts = [
             </div>
 
             <div className="md:col-span-5">
-              <div className={`${theme.surfaces.card} rounded-3xl p-8 shadow-2xl h-full`}>
+              <div className={`${theme.surfaces.card} rounded-3xl p-8 h-full`}>
                 <h3 className={`${theme.text.sectionTitle} text-3xl font-semibold mb-8 tracking-[-1px]`}>Get in touch with me!</h3>
                 
                 <div className="space-y-7 text-[var(--about-foreground)]">
