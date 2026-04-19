@@ -237,7 +237,7 @@ const randomContacts = [
           </div>
         </div>
 
-        <div className="mb-24">
+        <div className="mb-6">
           <div className="flex items-baseline justify-between mb-8">
             <h2 className={`${theme.text.sectionTitle} text-4xl font-semibold tracking-[-1px]`}>Skills &amp; Tools</h2>
             <span className="font-mono text-xs uppercase tracking-widest text-[var(--about-muted)]">I can also make corn tortillas from scratch</span>
