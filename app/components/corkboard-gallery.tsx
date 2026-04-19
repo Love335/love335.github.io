@@ -146,11 +146,11 @@ const styles: Record<string, React.CSSProperties> = {
       'radial-gradient(ellipse 3px 2px at 20px 40px, rgba(0,0,0,0.08) 100%, transparent 100%)',
     ].join(', '),
     backgroundSize: '44px 44px',
-    padding: '40px 40px 56px',
+    padding: 'clamp(40px, 6vw, 100px) clamp(40px, 6vw, 100px) clamp(56px, 8vw, 120px)',
     borderRadius: '4px',
     border: '10px solid #8b5e20',
     boxSizing: 'border-box',
-    margin: '40px',
+    margin: 'clamp(40px, 6vw, 100px)',
   },
 
   boardTitle: {
