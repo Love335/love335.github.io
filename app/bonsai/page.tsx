@@ -48,6 +48,7 @@ function BonsaiContent() {
                         {
                             name: "Emmi Masalkovski",
                             image: "/collaborators/emmi_masalkovski.jpg",
+                            link: "https://www.linkedin.com/in/emmi-masalkovski-05a89339a/"
                         },
                         ]}
                     />

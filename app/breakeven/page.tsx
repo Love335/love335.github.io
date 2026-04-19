@@ -29,10 +29,12 @@ function BreakEvenContent() {
                 {
                   name: "Max Koste",
                   image: "/collaborators/max_koste.jpg",
+                  link: "https://www.linkedin.com/in/maxkoste/",
                 },
                 {
                   name: "Linn Otendal",
-                  image: "/collaborators/linn_otendal.jpg"
+                  image: "/collaborators/linn_otendal.jpg",
+                  link: "https://www.linkedin.com/in/linnotendal/"
                 }
               ]}
             />
@@ -110,7 +112,7 @@ function BreakEvenContent() {
               </h2>
               <p className={`${theme.text.body} leading-relaxed`}>
                 Use celestial bodies to turn the game on its head. Multiply your earnings, 
-                destroy the dealers cards, and more.
+                destroy the dealer&apos;s cards, and more.
               </p>
             </div>
             <div className="flex justify-center mb-6">

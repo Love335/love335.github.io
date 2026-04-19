@@ -31,6 +31,7 @@ function BeatnikContent() {
                 {
                   name: "Max Koste",
                   image: "/collaborators/max_koste.jpg",
+                  link: "https://www.linkedin.com/in/maxkoste/",
                 },
               ]}
             />
@@ -55,10 +56,8 @@ function BeatnikContent() {
           </div>
         </div>
 
-        {/* CONTENT GRID */}
         <div className="columns-1 md:columns-2 gap-10 space-y-20">
 
-          {/* WAVEFORM */}
           <div className="break-inside-avoid">
             <div className="flex justify-center mb-6">
               <div className={`w-full max-w-lg rounded-2xl overflow-hidden p-2 shadow-xl ${theme.surfaces.card}`}>
@@ -83,7 +82,6 @@ function BeatnikContent() {
             </div>
           </div>
 
-          {/* SOUNDBOARD */}
           <div className="break-inside-avoid">
             <div className="flex flex-row gap-6 items-center">
               <div className={`flex-shrink-0 w-full max-w-md rounded-2xl overflow-hidden p-2 shadow-xl ${theme.surfaces.card}`}>
@@ -130,7 +128,6 @@ function BeatnikContent() {
             </div>
           </div>
 
-          {/* MIXER */}
           <div className="break-inside-avoid">
             <div className="flex justify-center mb-6">
               <div className={`w-full max-w-[180px] rounded-2xl overflow-hidden p-2 shadow-xl ${theme.surfaces.card}`}>

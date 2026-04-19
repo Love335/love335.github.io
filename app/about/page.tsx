@@ -160,12 +160,12 @@ const randomContacts = [
               </a>
 
               <a
-                href="https://www.youtube.com/watch?v=Kqx9blbYDB0"
+                href="https://docs.google.com/document/d/1rO_kUTWEDz0GJpGV-GtIPvXu7dTKXbVD0gtHAcwAum4/edit?usp=sharing"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="group flex items-center gap-x-3 px-7 py-4 bg-[var(--about-primary)] hover:bg-[var(--about-primary-hover)] text-[var(--about-highlight)] rounded-2xl font-medium transition-all active:scale-95"
               >
-                <span className="text-lg">Cool Video</span>
+                <span className="text-lg">Threat Assessment</span>
                 <span className="text-2xl transition-transform group-active:-rotate-12">🔬</span>
               </a>
             </div>
@@ -203,9 +203,9 @@ const randomContacts = [
               <div className={`${theme.surfaces.card} rounded-3xl p-10 md:p-12 shadow-2xl h-full transition-all hover:-translate-y-1 hover:shadow-2xl`}>                
                 <h2 className={`${theme.text.sectionTitle} text-4xl font-semibold mb-8 tracking-[-1px]`}>About Me</h2>
                 <div className={`${theme.text.body} text-[21px] leading-relaxed space-y-8`}>
-                  <p>Second-year student of Systems Development at Malmö University, with skills in programming and integrated systems. My primary experience is in Java, Python, and TypeScript, but I&apos;m always looking to learn new languages.</p>
+                  <p>Second-year student of Systems Development at Malmö University, with skills in programming and integrated systems. My primary experiences are listed below, but I&apos;m always looking to learn new techniques.</p>
                   <p>I&apos;m a driven problem-solver, and I love navigating complex tasks and finding ways to make things work. IT is infinite and constantly evolving, I never back down from diving into another rabbit hole.</p>
-                  <p className="italic text-[var(--about-muted)]">Outside of work I have a passion for cooking, hiking, instant photography, and of course computers!</p>
+                  <p className="italic text-[var(--about-muted)]">Outside of work I have a passion for cooking, TTRPGs, hiking, instant photography, creative writing, and of course computers!</p>
                 </div>
               </div>
             </div>

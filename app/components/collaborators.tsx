@@ -1,6 +1,6 @@
 'use client';
-
 import Image from 'next/image';
+import Link from 'next/link';
 import { useTheme } from '../theme-provider';
 
 export default function Collaborators({
@@ -8,7 +8,7 @@ export default function Collaborators({
   collaborators,
 }: {
   title?: string;
-  collaborators: { name: string; image: string }[];
+  collaborators: { name: string; image: string; link?: string }[];
 }) {
   const theme = useTheme();
 
@@ -17,7 +17,6 @@ export default function Collaborators({
       <p className={`text-sm uppercase tracking-widest font-medium ${theme.collaborators.title}`}>
         {title}
       </p>
-
       <div className="flex flex-wrap gap-6">
         {collaborators.map((person, index) => (
           <div key={index} className="flex items-center gap-3 group">
@@ -33,9 +32,20 @@ export default function Collaborators({
               />
             </div>
 
-            <p className={`font-medium ${theme.collaborators.name}`}>
-              {person.name}
-            </p>
+            {person.link ? (
+              <Link
+                href={person.link}
+                className={`font-medium hover:underline ${theme.collaborators.name}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {person.name}
+              </Link>
+            ) : (
+              <p className={`font-medium ${theme.collaborators.name}`}>
+                {person.name}
+              </p>
+            )}
           </div>
         ))}
       </div>
