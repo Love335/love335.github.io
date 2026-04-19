@@ -160,7 +160,7 @@ const randomContacts = [
               </a>
 
               <a
-                href="https://docs.google.com/document/d/1rO_kUTWEDz0GJpGV-GtIPvXu7dTKXbVD0gtHAcwAum4/edit?usp=sharing"
+                href="/threat_assessment.pdf"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="group flex items-center gap-x-3 px-7 py-4 bg-[var(--about-primary)] hover:bg-[var(--about-primary-hover)] text-[var(--about-highlight)] rounded-2xl font-medium transition-all active:scale-95"
