@@ -127,7 +127,7 @@ const randomContacts = [
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--about-accent)] opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-3 w-3 bg-[var(--about-accent)]"></span>
               </span>
-              SECOND-YEAR SYSTEMS DEVELOPER • MALMÖ UNIVERSITY
+              THIRD-YEAR SYSTEMS DEVELOPER • MALMÖ UNIVERSITY
             </div>
 
             <h1 className={`${theme.text.heading} text-7xl md:text-8xl font-black tracking-[-2px] leading-none`}>
@@ -202,7 +202,7 @@ const randomContacts = [
               <div className={`${theme.surfaces.card} rounded-3xl p-10 md:p-12 shadow-xl h-full transition-all hover:-translate-y-1 hover:shadow-2xl`}>                
                 <h2 className={`${theme.text.sectionTitle} text-4xl font-semibold mb-8 tracking-[-1px]`}>About Me</h2>
                 <div className={`${theme.text.body} text-[21px] leading-relaxed space-y-8`}>
-                  <p>Second-year student of Systems Development at Malmö University, with skills in programming and integrated systems. My primary experiences are listed below, but I&apos;m always looking to learn new techniques.</p>
+                  <p>Third-year student of Systems Development at Malmö University, with skills in programming and integrated systems. My primary experiences are listed below, but I&apos;m always looking to learn new techniques.</p>
                   <p>I&apos;m a driven problem-solver, and I love navigating complex tasks and finding ways to make things work. IT is infinite and constantly evolving, I never back down from diving into another rabbit hole.</p>
                   <p className="italic text-[var(--about-muted)]">Outside of work I have a passion for cooking, TTRPGs, hiking, instant photography, creative writing, and of course computers!</p>
                 </div>

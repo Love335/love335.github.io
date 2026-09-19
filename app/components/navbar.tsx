@@ -46,6 +46,20 @@ const navItems = [
     emoji: '🌍',
   },
   {
+    label: 'moneymaker',
+    href: '/moneymaker',
+    accentColor: 'bg-amber-500 hover:bg-amber-600',
+    activeColor: 'bg-amber-500',
+    emoji: '💵',
+  },
+  {
+    label: 'SAAF',
+    href: '/saaf',
+    accentColor: 'bg-violet-700 hover:bg-violet-800',
+    activeColor: 'bg-violet-700',
+    emoji: '🔭',
+  },
+  {
     label: 'uConsole',
     href: '/uconsole',
     accentColor: 'bg-slate-700 hover:bg-slate-800',

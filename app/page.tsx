@@ -104,7 +104,7 @@ export default function Home() {
             >
               Current project:{' '}
               <Link
-                href="/localhero"
+                href="/saaf"
                 style={{
                   color: '#ffffb3',
                   textDecoration: 'none',
@@ -114,7 +114,7 @@ export default function Home() {
                 }}
                 className="home-project-link"
               >
-                Local Hero
+                SAAF
               </Link>
             </p>
 
