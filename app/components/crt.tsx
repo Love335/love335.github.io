@@ -106,7 +106,7 @@ const PROJECTS: Record<string, string[]> = {
   'SAAF': [
     'LOADING SAAF.APP...',
     '',
-    'Building web-tech for Svensk AmatörAstronomisk Förening.',
+    'Building web-tech for SAAF.',
     'Supports a remote access telescope.',
     '',
     'STACK: PHP, JavaScript, Python, Wordpress',
