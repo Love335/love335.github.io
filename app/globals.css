@@ -116,6 +116,15 @@
   --localhero-border: #d2bd97;
   --localhero-accent: #d9741a;      /* burnt orange hover accent */
   --localhero-row-hover: #e6d5b6;
+
+  --moneymaker-background: #0b1220;  /* deep navy page */
+  --moneymaker-foreground: #e9edf5;
+  --moneymaker-primary: #d4af37;     /* gold headings */
+  --moneymaker-muted: #9aa5b8;       /* cool slate body text */
+  --moneymaker-surface: #131c2e;     /* card frame, one step up from bg */
+  --moneymaker-border: #26324a;
+  --moneymaker-accent: #3ecf8e;      /* market-green hover accent */
+  --moneymaker-row-hover: #1a2438;
 }
 
 body {

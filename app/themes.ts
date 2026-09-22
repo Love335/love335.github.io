@@ -162,3 +162,38 @@ export const localheroTheme: Theme = {
     divider: "divide-[var(--localhero-border)]",
   },
 };
+
+export const moneymakerTheme: Theme = {
+  page: {
+    background: "bg-[var(--moneymaker-background)]",
+    text: "text-[var(--moneymaker-foreground)]",
+  },
+
+  text: {
+    heading: "text-[var(--moneymaker-primary)]",
+    subheading: "text-[var(--moneymaker-muted)]",
+    body: "text-[var(--moneymaker-muted)]",
+    sectionTitle: "text-[var(--moneymaker-primary)]",
+  },
+
+  surfaces: {
+    card: "bg-[var(--moneymaker-surface)] border border-[var(--moneymaker-border)]",
+  },
+
+  collaborators: {
+    title: "text-[var(--moneymaker-muted)]",
+    name: "text-[var(--moneymaker-foreground)]",
+    border: "border-[var(--moneymaker-border)]",
+    borderHover: "group-hover:border-[var(--moneymaker-accent)]",
+  },
+
+  skills: {
+    container: "bg-[var(--moneymaker-surface)] border border-[var(--moneymaker-border)]",
+    headerText: "text-[var(--moneymaker-muted)]",
+    rowHover: "hover:bg-[var(--moneymaker-row-hover)]",
+    categoryText: "text-[var(--moneymaker-primary)]",
+    itemsText: "text-[var(--moneymaker-muted)]",
+    border: "border-[var(--moneymaker-border)]",
+    divider: "divide-[var(--moneymaker-border)]",
+  },
+};
