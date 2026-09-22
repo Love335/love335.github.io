@@ -28,10 +28,10 @@ const copyToClipboard = (text: string, type: 'email' | 'phone' | 'address' | 'ra
   };
 
   const skillsData = [
-    { category: "Languages", items: "Java, Python, Kotlin, TypeScript, JavaScript, HTML, CSS" },
-    { category: "Frameworks & Tools", items: "Next.js, React, Gradle, Git, Linux, Bash" },
+    { category: "Languages", items: "Java, C++, Python, Kotlin, TypeScript, JavaScript, PHP, HTML, CSS" },
+    { category: "Frameworks & Tools", items: "Next.js, React, Gradle, Maven, Git, Linux, FreeBSD, Raspberry Pi, Bash" },
     { category: "Systems & DevOps", items: "CI/CD, Unit Testing, Test Automation, Scrum, REST, API, SQL, PostgreSQL" },
-    { category: "Core Concepts", items: "OOP, InfoSec, Data Structures, Algorithms, Concurrency, UML" }
+    { category: "Core Concepts", items: "OOP, InfoSec, Data Structures, Computer Hardware, Design Patterns, Algorithms, Concurrency, UML" }
   ];
 
 const randomContacts = [

@@ -156,7 +156,7 @@ function LocalHeroContent() {
                 Notifications
               </h2>
               <p className={`${theme.text.body} leading-relaxed`}>
-                Polling system peroidically detects updates and notifies users.
+                Polling system periodically detects updates and notifies users.
               </p>
             </div>
           </div>
