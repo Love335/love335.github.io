@@ -107,6 +107,15 @@
   --bonsai-muted: var(--bonsai-4);
   --bonsai-subtle: var(--bonsai-5);
   --bonsai-row-hover: rgba(86, 130, 89, 0.15);
+
+  --localhero-background: #f1e4cc;  /* warm sand page */
+  --localhero-foreground: #2b2118;
+  --localhero-primary: #4a2c1a;     /* espresso brown headings */
+  --localhero-muted: #6b5443;       /* warm brown body text */
+  --localhero-surface: #faf1df;     /* warm ivory card frame around dark images */
+  --localhero-border: #d2bd97;
+  --localhero-accent: #d9741a;      /* burnt orange hover accent */
+  --localhero-row-hover: #e6d5b6;
 }
 
 body {

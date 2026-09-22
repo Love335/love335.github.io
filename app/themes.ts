@@ -127,3 +127,38 @@ export const bonsaiTheme: Theme = {
     divider: "divide-[var(--bonsai-primary)]",
   },
 };
+
+export const localheroTheme: Theme = {
+  page: {
+    background: "bg-[var(--localhero-background)]",
+    text: "text-[var(--localhero-foreground)]",
+  },
+
+  text: {
+    heading: "text-[var(--localhero-primary)]",
+    subheading: "text-[var(--localhero-muted)]",
+    body: "text-[var(--localhero-muted)]",
+    sectionTitle: "text-[var(--localhero-primary)]",
+  },
+
+  surfaces: {
+    card: "bg-[var(--localhero-surface)] border border-[var(--localhero-border)]",
+  },
+
+  collaborators: {
+    title: "text-[var(--localhero-muted)]",
+    name: "text-[var(--localhero-primary)]",
+    border: "border-[var(--localhero-border)]",
+    borderHover: "group-hover:border-[var(--localhero-accent)]",
+  },
+
+  skills: {
+    container: "bg-[var(--localhero-surface)] border border-[var(--localhero-border)]",
+    headerText: "text-[var(--localhero-primary)]",
+    rowHover: "hover:bg-[var(--localhero-row-hover)]",
+    categoryText: "text-[var(--localhero-primary)]",
+    itemsText: "text-[var(--localhero-muted)]",
+    border: "border-[var(--localhero-border)]",
+    divider: "divide-[var(--localhero-border)]",
+  },
+};

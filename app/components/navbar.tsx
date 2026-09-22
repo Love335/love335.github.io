@@ -43,7 +43,8 @@ const navItems = [
     href: '/localhero',
     accentColor: 'bg-sky-600 hover:bg-sky-700',
     activeColor: 'bg-sky-600',
-    emoji: '🌍',
+    icon: '/icons/icon_localhero.png',
+    type: 'localhero',
   },
   {
     label: 'moneymaker',
