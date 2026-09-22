@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import SkillsTable from '../components/skills-table';
 import { ThemeProvider, useTheme } from '../theme-provider';
-import { moneymakerTheme } from '../themes'; // TODO: add moneymakerTheme to themes
+import { moneymakerTheme } from '../themes';
 
 function MoneyMakerContent() {
   const theme = useTheme();
