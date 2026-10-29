@@ -1,193 +1,133 @@
-'use client';
+"use client";
 
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { useWire } from './wire-context';
+import { useCallback, useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
+import { cn } from "../lib/cn";
+import { getProject } from "../lib/projects";
+import { useWire } from "./wire-context";
+import styles from "./crt.module.css";
 
-const PROJECT_HREFS: Record<string, string> = {
-  'About Me':    '/about',
-  Beatnik:       '/beatnik',
-  BreakEven:     '/breakeven',
-  Bonsai:        '/bonsai',
-  'Local Hero':  '/localhero',
-  uConsole:      '/uconsole',
-};
-
-const PROJECTS: Record<string, string[]> = {
-  'About Me': [
-    'LOADING PROFILE...',
-    '',
-    'USER: love_sk%C3%83%C2%B6n',
-    'STATUS: available for work',
-    '',
-    '→ systems developer, full-stack developer',
-    '→ gets things done',
-    '→ focused and determined',
-    '',
-    'INTERESTS: systems, code, UI/UX, IT, twin peaks, owls',
-    'LOCATION: malm%C3%83%C2%B6',
-    '',
-  ],
-  Beatnik: [
-    'LOADING BEATNIK.APP...',
-    '',
-    'A music app for the common',
-    'folk, easy and accessible.',
-    '',
-    'STACK: Java, JavaFX, CSS',
-    'PLATFORM: Windows, Mac, Linux',
-    'STATUS: finished',
-    '',
-    '→ OS interaction',
-    '→ uses semaphores',
-    '→ scalable GUI',
-    '',
-  ],
-  BreakEven: [
-    'LOADING BREAKEVEN.APP...',
-    '',
-    'A blackjack game.',
-    'Make your money back.',
-    '',
-    'STACK: Python, JavaScript, HTML, CSS',
-    'PLATFORM: Browser',
-    'STATUS: on indefinite hold',
-    '',
-    '→ API interaction',
-    '→ JSON interpretation',
-    '→ addicting (though less than gambling)',
-    '',
-  ],
-  Bonsai: [
-    'LOADING BONSAI.APP...',
-    '',
-    'A tamagotchi-style plant',
-    'keeping app.',
-    '',
-    'STACK: Kotlin, Jetpack Compose',
-    'PLATFORM: Android',
-    'STATUS: finished',
-    '',
-    '→ emulator technology',
-    '→ SQL database',
-    '→ large CI/CD pipeline',
-    '',
-  ],
-  'Local Hero': [
-    'LOADING LOCALHERO.APP...',
-    '',
-    'Discover your neighborhood.',
-    'Support sustainability.',
-    '',
-    'STACK: TypeScript, React',
-    'PLATFORM: Browser',
-    'STATUS: finished',
-    '',
-    '→ functional messaging system...',
-    '→ large user capacity',
-    '→ high use of design patterns...',
-    '',
-  ],
-  'moneymaker': [
-    'LOADING MONEYMAKER.APP...',
-    '',
-    'Always-on raspberry pi server.',
-    'Runs stock-trading algorithms.',
-    '',
-    'STACK: Python, Linux',
-    'PLATFORM: Raspberry Pi',
-    'STATUS: finished',
-    '',
-    '→ physical soldered components...',
-    '→ switch algorithms on the fly...',
-    '→ ssh to change config...',
-    '',
-  ],
-  'SAAF': [
-    'LOADING SAAF.APP...',
-    '',
-    'Building web-tech for SAAF.',
-    'Supports a remote access telescope.',
-    '',
-    'STACK: PHP, JavaScript, Python, Wordpress',
-    'PLATFORM: Browser/Server',
-    'STATUS: in development',
-    '',
-    '→ project lead over 8 members...',
-    '→ working for an external client',
-    '→ server running on FreeBSD...',
-    '',
-  ],
-  uConsole: [
-    'LOADING UCONSOLE...',
-    '',
-    'A pocket-sized computer.',
-    'Portable and powerful.',
-    '',
-    'PLATFORM: hardware mod',
-    'STATUS: waiting on components :(',
-    '',
-    '→ custom Linux environment',
-    '→ computer assembly',
-    '→ modified for RTL-SDR, GPS, ETC',
-    '→ supports monitor mode',
-    '',
-  ],
-};
+/** The key the user presses to answer a prompt. Rendered as a button wherever it appears. */
+const KEY = "[y]";
 
 const IDLE_LINES = [
-  'PORTFOWLIO-1 v2.4 ready.',
-  '',
-  'No signal detected.',
-  '',
-  '→ connect wire to port',
-  ' above to load output.',
-  '→ or click icons for more',
-  ' info.                              ,___,',
-  '                                   /(6 6)\\_',
-  '                                  /\\` \' `\'\\\\_',
-  '                                  \\\\\\_\\\'\\\'|\\\\\\',
-  '                                  )\\\\\\\\\'\'//||/',
-  '                             ._,--/////""----|--------',
-  '                                            `|',
-  '                                             |',
+  "PORTFOWLIO-1 v2.4 ready.",
+  "",
+  "No signal detected.",
+  "",
+  "→ connect wire to port",
+  " above to load output.",
+  "→ click icons for more info."
 ];
 
-interface Vec2 { x: number; y: number }
+/* Pressing the key here plugs the wire into a random tab. */
+const RANDOM_PROMPT = ["→ or press [y] to plug", " into a random port."];
+
+/* The owl in the lower-right corner, drawn relative to its own left edge. Its
+   head shares the last idle line, and the rest follow on the lines below. */
+const OWL_LINES = [
+  "",
+  "       ,___,",
+  "      /(6 6)\\_",
+  "     /\\` ' `'\\\\_",
+  "     \\\\\\_\\''|\\\\\\",
+  "     )\\\\\\\\''//||/",
+  "._,--/////\"\"----|--------",
+  "               `|",
+  "                |",
+];
+const OWL_WIDTH = Math.max(...OWL_LINES.map((line) => line.length));
+
+const leadingSpaces = (line: string) => line.length - line.trimStart().length;
+
+/**
+ * Idle text for a `cols`-wide screen. The owl is indented to sit against the
+ * right edge, and the random-port prompt goes to the left of the owl's first
+ * body rows when there is room for it, otherwise underneath the owl.
+ */
+function idleLines(cols: number): string[] {
+  const indent = Math.max(0, cols - OWL_WIDTH);
+  const [head, ...body] = OWL_LINES;
+  const last = IDLE_LINES[IDLE_LINES.length - 1];
+  const beside = RANDOM_PROMPT.every(
+    (line, i) => line.length + 1 <= indent + leadingSpaces(body[i]),
+  );
+  return [
+    ...IDLE_LINES.slice(0, -1),
+    last.padEnd(indent) + head,
+    ...body.map((row, i) => (beside ? (RANDOM_PROMPT[i] ?? "") : "").padEnd(indent) + row),
+    ...(beside ? [] : RANDOM_PROMPT),
+  ];
+}
+
+/** Characters in the hidden span used to measure the terminal's character width. */
+const PROBE_LENGTH = 40;
+/** Columns on a full-size screen, used before the terminal can be measured. */
+const DEFAULT_COLS = 54;
+
+interface Vec2 {
+  x: number;
+  y: number;
+}
 
 function makeWirePath(sx: number, sy: number, tx: number, ty: number): string {
   const dist = Math.hypot(tx - sx, ty - sy);
-  const sag  = Math.min(dist * 0.3, 80);
+  const sag = Math.min(dist * 0.3, 80);
   return `M ${sx} ${sy} C ${sx} ${sy + sag}, ${tx} ${ty + sag * 0.35}, ${tx} ${ty}`;
 }
 
+/** How far outside a navbar tab the wire can be dropped and still connect. */
 const HIT_PADDING = 28;
+
+const easeInOut = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+
+/** Terminal text with the first prompt key rendered as a pressable button. */
+function TerminalText({ text, onKey }: { text: string; onKey: () => void }) {
+  const i = text.indexOf(KEY);
+  if (i === -1) return text;
+  return (
+    <>
+      {text.slice(0, i)}
+      <button type="button" className={styles.promptKey} onClick={onKey}>
+        {KEY}
+      </button>
+      {text.slice(i + KEY.length)}
+    </>
+  );
+}
+
+/** What pressing the key does right now. */
+type KeyAction = "open" | "random";
 
 export default function Crt() {
   const router = useRouter();
 
   const {
-    pluggedLabel,
-    setPluggedLabel,
-    setHoveredLabel,
+    pluggedSlug,
+    setPluggedSlug,
+    setHoveredSlug,
     getJackCenter,
     getAllJacks,
     registerPlugPointerDown,
   } = useWire();
 
-  const portRef     = useRef<HTMLDivElement>(null);
-  const isDragging  = useRef(false);
+  const portRef = useRef<HTMLDivElement>(null);
+  const terminalRef = useRef<HTMLDivElement>(null);
+  const probeRef = useRef<HTMLSpanElement>(null);
+  const isDragging = useRef(false);
   const pluggedSnap = useRef<Vec2 | null>(null);
+  const animation = useRef<number | null>(null);
 
-  const [wireVisible, setWireVisible] = useState(false);
-  const [wireD,       setWireD]       = useState('');
+  const [wireD, setWireD] = useState("");
 
-  const [displayText, setDisplayText] = useState('');
-  const [promptText,  setPromptText]  = useState('');
+  const [displayText, setDisplayText] = useState("");
+  const [promptText, setPromptText] = useState("");
+  /** Lines the screen makes room for; the idle text decides it. */
+  const [screenLines, setScreenLines] = useState(15);
 
-  const awaitingYes = useRef(false);
-  const activeLabel = useRef<string | null>(null);
-  const printTimer  = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const pendingKey = useRef<KeyAction | null>(null);
+  const activeSlug = useRef<string | null>(null);
+  const printTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const getPortCenter = useCallback((): Vec2 => {
     const r = portRef.current?.getBoundingClientRect();
@@ -195,120 +135,212 @@ export default function Crt() {
     return { x: r.left + r.width / 2, y: r.top + r.height / 2 };
   }, []);
 
-  const drawTo = useCallback((tx: number, ty: number) => {
-    const { x: sx, y: sy } = getPortCenter();
-    setWireD(makeWirePath(sx, sy, tx, ty));
-  }, [getPortCenter]);
+  const drawTo = useCallback(
+    (tx: number, ty: number) => {
+      const { x: sx, y: sy } = getPortCenter();
+      setWireD(makeWirePath(sx, sy, tx, ty));
+    },
+    [getPortCenter],
+  );
 
-  const getSlotAt = useCallback((x: number, y: number): string | null => {
-    for (const [label, el] of getAllJacks()) {
-      const parent = el.closest('a') ?? el;
-      const r = parent.getBoundingClientRect();
-      if (
-        x >= r.left   - HIT_PADDING &&
-        x <= r.right  + HIT_PADDING &&
-        y >= r.top    - HIT_PADDING &&
-        y <= r.bottom + HIT_PADDING
-      ) return label;
-    }
-    return null;
-  }, [getAllJacks]);
+  /** The tab under the pointer: whichever padded tab is horizontally nearest. */
+  const getSlotAt = useCallback(
+    (x: number, y: number): string | null => {
+      let best: { slug: string; dist: number } | null = null;
+      for (const [slug, el] of getAllJacks()) {
+        const r = (el.closest("a") ?? el).getBoundingClientRect();
+        if (
+          x < r.left - HIT_PADDING ||
+          x > r.right + HIT_PADDING ||
+          y < r.top - HIT_PADDING ||
+          y > r.bottom + HIT_PADDING
+        ) {
+          continue;
+        }
+        const dist = Math.abs(x - (r.left + r.right) / 2);
+        if (!best || dist < best.dist) best = { slug, dist };
+      }
+      return best?.slug ?? null;
+    },
+    [getAllJacks],
+  );
 
-  const printLines = useCallback((lines: string[], label: string | null = null) => {
+  const printLines = useCallback((lines: string[], slug: string | null = null) => {
     if (printTimer.current) clearTimeout(printTimer.current);
-    setDisplayText('');
-    setPromptText('');
-    awaitingYes.current = false;
+    setDisplayText("");
+    setPromptText("");
+    pendingKey.current = null;
 
-    let li = 0, ci = 0, built = '';
+    // The key becomes active as soon as it has been typed on screen.
+    const action: KeyAction = slug ? "open" : "random";
 
-    function printPrompt(lbl: string) {
-      const prompt = `Open ${lbl}? [y]`;
-      let pi = 0;
-      let pbuilt = '';
+    const schedule = (fn: () => void, ms: number) => {
+      printTimer.current = setTimeout(fn, ms);
+    };
 
-      function promptStep() {
-        if (pi < prompt.length) {
-          pbuilt += prompt[pi++];
-          setPromptText(pbuilt);
-          printTimer.current = setTimeout(promptStep, 22 + Math.random() * 10);
+    function typeLines(done: () => void) {
+      let li = 0;
+      let ci = 0;
+      let built = "";
+
+      function step() {
+        if (li >= lines.length) {
+          done();
+          return;
+        }
+        const line = lines[li];
+        if (ci < line.length) {
+          built += line[ci++];
+          setDisplayText(built);
+          if (built.endsWith(KEY)) pendingKey.current = action;
+          schedule(step, line[ci - 1] === "." ? 75 : 15 + Math.random() * 12);
         } else {
-          awaitingYes.current = true;
+          built += "\n";
+          li++;
+          ci = 0;
+          setDisplayText(built);
+          schedule(step, line === "" ? 30 : 75);
         }
       }
 
-      printTimer.current = setTimeout(promptStep, 300);
+      step();
     }
 
-    function step() {
-      if (li >= lines.length) {
-        if (label) printPrompt(label);
-        return;
+    function typePrompt(label: string) {
+      const prompt = `Open ${label}? ${KEY}`;
+      let pi = 0;
+      let built = "";
+
+      function step() {
+        if (pi < prompt.length) {
+          built += prompt[pi++];
+          setPromptText(built);
+          schedule(step, 22 + Math.random() * 10);
+        } else {
+          pendingKey.current = action;
+        }
       }
-      const line = lines[li];
-      if (ci < line.length) {
-        built += line[ci++];
-        setDisplayText(built);
-        const delay = line[ci - 1] === '.' ? 75 : 15 + Math.random() * 12;
-        printTimer.current = setTimeout(step, delay);
-      } else {
-        built += '\n';
-        li++; ci = 0;
-        setDisplayText(built);
-        printTimer.current = setTimeout(step, line === '' ? 30 : 75);
-      }
+
+      schedule(step, 300);
     }
 
-    step();
+    const project = slug ? getProject(slug) : undefined;
+    typeLines(() => {
+      if (project) typePrompt(project.label);
+    });
   }, []);
 
-  const plugInto = useCallback((label: string) => {
-    const snap = getJackCenter(label);
-    if (!snap) return;
-    pluggedSnap.current = snap;
-    activeLabel.current = label;
-    setPluggedLabel(label);
-    setWireVisible(true);
-    drawTo(snap.x, snap.y - window.scrollY);
-    printLines(PROJECTS[label] ?? IDLE_LINES, label);
-  }, [getJackCenter, setPluggedLabel, drawTo, printLines]);
+  /** How many characters fit on one line of the terminal right now. */
+  const measureCols = useCallback((): number => {
+    const terminal = terminalRef.current;
+    const probe = probeRef.current;
+    if (!terminal || !probe) return DEFAULT_COLS;
+    const style = getComputedStyle(terminal);
+    const inner =
+      terminal.clientWidth - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight);
+    const charWidth = probe.getBoundingClientRect().width / PROBE_LENGTH;
+    return charWidth > 0 ? Math.floor(inner / charWidth) : DEFAULT_COLS;
+  }, []);
+
+  const printIdle = useCallback(() => {
+    const lines = idleLines(measureCols());
+    setScreenLines(lines.length);
+    printLines(lines);
+  }, [measureCols, printLines]);
+
+  const cancelAnimation = useCallback(() => {
+    if (animation.current !== null) cancelAnimationFrame(animation.current);
+    animation.current = null;
+  }, []);
+
+  const plugInto = useCallback(
+    (slug: string) => {
+      const snap = getJackCenter(slug);
+      if (!snap) return;
+      pluggedSnap.current = snap;
+      activeSlug.current = slug;
+      setPluggedSlug(slug);
+      drawTo(snap.x, snap.y - window.scrollY);
+      printLines(getProject(slug)?.terminal ?? IDLE_LINES, slug);
+    },
+    [getJackCenter, setPluggedSlug, drawTo, printLines],
+  );
 
   const doUnplug = useCallback(() => {
     pluggedSnap.current = null;
-    activeLabel.current = null;
-    awaitingYes.current = false;
-    setPluggedLabel(null);
-    setWireVisible(false);
-    setWireD('');
-    setPromptText('');
-    printLines(IDLE_LINES);
-  }, [setPluggedLabel, printLines]);
+    activeSlug.current = null;
+    setPluggedSlug(null);
+    setWireD("");
+    setPromptText("");
+    printIdle();
+  }, [setPluggedSlug, printIdle]);
 
-  const beginDrag = useCallback((e: PointerEvent, targetEl: HTMLElement) => {
-    isDragging.current = true;
-    targetEl.setPointerCapture(e.pointerId);
+  /** Pulls the wire from the port to a random tab, as if dragged by hand, and plugs it in. */
+  const connectRandom = useCallback(() => {
+    const slugs = [...getAllJacks().keys()];
+    const slug = slugs[Math.floor(Math.random() * slugs.length)];
+    const target = slug ? getJackCenter(slug) : null;
+    if (!target) return;
 
-    if (pluggedSnap.current) {
-      pluggedSnap.current = null;
-      activeLabel.current = null;
-      awaitingYes.current = false;
-      setPluggedLabel(null);
-      setPromptText('');
-      printLines(IDLE_LINES);
-    }
+    pendingKey.current = null;
+    cancelAnimation();
 
-    setWireVisible(true);
-    drawTo(e.clientX, e.clientY);
-  }, [setPluggedLabel, drawTo, printLines]);
+    const from = getPortCenter();
+    const to = { x: target.x - window.scrollX, y: target.y - window.scrollY };
+    const duration = Math.min(1100, 450 + Math.hypot(to.x - from.x, to.y - from.y) * 0.6);
+    const start = performance.now();
 
-  const onPortPointerDown = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    beginDrag(e.nativeEvent, e.currentTarget);
-  }, [beginDrag]);
+    const frame = (now: number) => {
+      const t = easeInOut(Math.min(1, (now - start) / duration));
+      const x = from.x + (to.x - from.x) * t;
+      const y = from.y + (to.y - from.y) * t;
+      drawTo(x, y);
+      setHoveredSlug(getSlotAt(x, y));
+      if (t < 1) {
+        animation.current = requestAnimationFrame(frame);
+        return;
+      }
+      animation.current = null;
+      setHoveredSlug(null);
+      plugInto(slug);
+    };
 
-  const onSocketPointerDown = useCallback((e: PointerEvent) => {
-    beginDrag(e, e.target as HTMLElement);
-  }, [beginDrag]);
+    animation.current = requestAnimationFrame(frame);
+  }, [getAllJacks, getJackCenter, cancelAnimation, getPortCenter, drawTo, setHoveredSlug, getSlotAt, plugInto]);
+
+  const beginDrag = useCallback(
+    (e: PointerEvent, targetEl: HTMLElement) => {
+      cancelAnimation();
+      isDragging.current = true;
+      targetEl.setPointerCapture(e.pointerId);
+
+      if (pluggedSnap.current) {
+        pluggedSnap.current = null;
+        activeSlug.current = null;
+        setPluggedSlug(null);
+        setPromptText("");
+        printIdle();
+      }
+
+      drawTo(e.clientX, e.clientY);
+    },
+    [cancelAnimation, setPluggedSlug, drawTo, printIdle],
+  );
+
+  const onPortPointerDown = useCallback(
+    (e: React.PointerEvent<HTMLDivElement>) => {
+      e.preventDefault();
+      beginDrag(e.nativeEvent, e.currentTarget);
+    },
+    [beginDrag],
+  );
+
+  const onSocketPointerDown = useCallback(
+    (e: PointerEvent) => {
+      beginDrag(e, e.target as HTMLElement);
+    },
+    [beginDrag],
+  );
 
   useEffect(() => {
     registerPlugPointerDown(onSocketPointerDown);
@@ -319,364 +351,142 @@ export default function Crt() {
     const onMove = (e: PointerEvent) => {
       if (!isDragging.current) return;
       drawTo(e.clientX, e.clientY);
-      setHoveredLabel(getSlotAt(e.clientX, e.clientY));
+      setHoveredSlug(getSlotAt(e.clientX, e.clientY));
     };
 
     const onUp = (e: PointerEvent) => {
       if (!isDragging.current) return;
       isDragging.current = false;
-      setHoveredLabel(null);
+      setHoveredSlug(null);
       const hit = getSlotAt(e.clientX, e.clientY);
       if (hit) plugInto(hit);
       else doUnplug();
     };
 
-    window.addEventListener('pointermove', onMove);
-    window.addEventListener('pointerup',   onUp);
-    return () => {
-      window.removeEventListener('pointermove', onMove);
-      window.removeEventListener('pointerup',   onUp);
+    const onCancel = () => {
+      if (!isDragging.current) return;
+      isDragging.current = false;
+      setHoveredSlug(null);
+      doUnplug();
     };
-  }, [drawTo, getSlotAt, setHoveredLabel, plugInto, doUnplug]);
+
+    window.addEventListener("pointermove", onMove);
+    window.addEventListener("pointerup", onUp);
+    window.addEventListener("pointercancel", onCancel);
+    return () => {
+      window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("pointerup", onUp);
+      window.removeEventListener("pointercancel", onCancel);
+    };
+  }, [drawTo, getSlotAt, setHoveredSlug, plugInto, doUnplug]);
+
+  const openActive = useCallback(() => {
+    const slug = activeSlug.current;
+    const href = slug ? getProject(slug)?.href : undefined;
+    if (href) router.push(href);
+  }, [router]);
+
+  /** Answers whichever prompt is currently showing. */
+  const pressKey = useCallback(() => {
+    const action = pendingKey.current;
+    if (action === "open") openActive();
+    else if (action === "random") connectRandom();
+  }, [openActive, connectRandom]);
 
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
-      if (!awaitingYes.current) return;
-      if (e.key !== 'y' && e.key !== 'Y') return;
-      const label = activeLabel.current;
-      if (!label) return;
-      const href = PROJECT_HREFS[label];
-      if (!href) return;
-      router.push(href);
+      if (e.key === "y" || e.key === "Y") pressKey();
     };
 
-    window.addEventListener('keydown', onKeyDown);
-    return () => window.removeEventListener('keydown', onKeyDown);
-  }, [router]);
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [pressKey]);
+
+  // The wire context outlives this component (it lives in the root layout), so
+  // start from an unplugged state whenever the home page is shown again.
+  useEffect(() => {
+    setPluggedSlug(null);
+    setHoveredSlug(null);
+  }, [setPluggedSlug, setHoveredSlug]);
 
   useEffect(() => {
-    pluggedSnap.current = null;
-    activeLabel.current = null;
-    awaitingYes.current = false;
-    isDragging.current  = false;
-    setPluggedLabel(null);
-    setHoveredLabel(null);
-    setWireVisible(false);
-    setWireD('');
-    setDisplayText('');
-    setPromptText('');
-  }, []);
+    printIdle();
+    return () => {
+      if (printTimer.current) clearTimeout(printTimer.current);
+    };
+  }, [printIdle]);
 
-  useEffect(() => {
-    printLines(IDLE_LINES);
-    return () => { if (printTimer.current) clearTimeout(printTimer.current); };
-  }, [printLines]);
+  useEffect(() => cancelAnimation, [cancelAnimation]);
 
-  const scrollY = useRef(0);
-
+  // Keep the plugged-in wire attached to its jack while the page scrolls.
   useEffect(() => {
     const onScroll = () => {
-      scrollY.current = window.scrollY;
-      if (!pluggedLabel) return;
-      const snap = getJackCenter(pluggedLabel);
+      if (!pluggedSlug) return;
+      const snap = getJackCenter(pluggedSlug);
       if (!snap) return;
       pluggedSnap.current = snap;
       const port = getPortCenter();
-      const ty = snap.y - scrollY.current;
-      setWireD(makeWirePath(port.x, port.y, snap.x, ty));
+      setWireD(makeWirePath(port.x, port.y, snap.x, snap.y - window.scrollY));
     };
-    window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
-  }, [pluggedLabel, getJackCenter, getPortCenter]);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [pluggedSlug, getJackCenter, getPortCenter]);
 
   useEffect(() => {
-    document.documentElement.style.overscrollBehaviorY = 'none';
+    document.documentElement.style.overscrollBehaviorY = "none";
     return () => {
-      document.documentElement.style.overscrollBehaviorY = '';
+      document.documentElement.style.overscrollBehaviorY = "";
     };
   }, []);
 
   return (
     <>
-      <style>{`
-        .crt-hero {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        }
-
-        .crt-monitor {
-          position: relative;
-          width: 580px;
-          background: linear-gradient(155deg, #cac4b6 0%, #b4ae9f 45%, #9e9890 100%);
-          border-radius: 10px 10px 8px 8px;
-          padding: 28px 28px 32px 28px;
-          border: 2px solid #8a8480;
-          box-shadow:
-            inset 0 2px 4px rgba(255,255,255,0.25),
-            inset 0 -2px 6px rgba(0,0,0,0.35),
-            4px 4px 0 #79746f,
-            7px 7px 0 #646060,
-            10px 10px 0 #4e4b48;
-          user-select: none;
-        }
-
-        .crt-monitor::before {
-          content: '';
-          position: absolute;
-          top: 18px;
-          right: -22px;
-          width: 22px;
-          height: 54%;
-          background: #b2aca4;
-          border-radius: 0 6px 6px 0;
-          border: 2px solid #8a8480;
-          border-left: none;
-          box-shadow: 4px 4px 0 #636060, 7px 7px 0 #4e4b48;
-        }
-
-        .crt-bezel {
-          background: #181818;
-          border-radius: 5px 5px 3px 3px;
-          padding: 10px;
-          border: 4px solid #0e0e0e;
-          box-shadow:
-            inset 0 0 24px rgba(0,0,0,0.9),
-            0 0 0 1px #404040;
-        }
-
-        .crt-screen {
-          width: 496px;
-          height: 340px;
-          background: #060500;
-          border-radius: 3px;
-          position: relative;
-          overflow: hidden;
-        }
-
-        .crt-screen::before {
-          content: '';
-          position: absolute;
-          inset: 0;
-          background: repeating-linear-gradient(
-            to bottom,
-            transparent 0px,
-            transparent 2px,
-            rgba(0,0,0,0.18) 2px,
-            rgba(0,0,0,0.18) 4px
-          );
-          pointer-events: none;
-          z-index: 5;
-        }
-
-        .crt-screen::after {
-          content: '';
-          position: absolute;
-          inset: 0;
-          background: radial-gradient(
-            ellipse at 50% 50%,
-            transparent 62%,
-            rgba(0,0,0,0.6) 100%
-          );
-          pointer-events: none;
-          z-index: 6;
-        }
-
-        .crt-terminal {
-          position: absolute;
-          inset: 0;
-          padding: 16px 20px;
-          font-family: 'Courier New', Courier, monospace;
-          font-size: 14px;
-          line-height: 1.6;
-          color: #d4920f;
-          white-space: pre-wrap;
-          word-break: break-all;
-          overflow: hidden;
-          z-index: 3;
-        }
-
-        .crt-terminal-text {
-          text-shadow: 0 0 8px rgba(200, 134, 10, 0.75);
-        }
-
-        /* Prompt is inline — cursor follows on the same line as [y] */
-        .crt-prompt {
-          text-shadow: 0 0 8px rgba(200, 134, 10, 0.75);
-        }
-
-        /* [y] glows brighter to signal it is interactive */
-        .crt-prompt-y {
-          color: #f0a820;
-          text-shadow: 0 0 10px rgba(240, 168, 32, 0.9);
-        }
-
-        .crt-cursor {
-          display: inline-block;
-          width: 9px;
-          height: 15px;
-          background: #c8860a;
-          box-shadow: 0 0 6px rgba(200, 134, 10, 0.8);
-          vertical-align: text-bottom;
-          margin-left: 1px;
-          animation: crt-blink 1.1s step-end infinite;
-        }
-        @keyframes crt-blink {
-          0%, 100% { opacity: 1; }
-          50%       { opacity: 0; }
-        }
-
-        .crt-chin {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          padding: 10px 14px 0;
-        }
-
-        .crt-power-led {
-          width: 13px;
-          height: 13px;
-          border-radius: 50%;
-          background: #484440;
-          border: 1px solid #333;
-          box-shadow: inset 0 1px 0 rgba(255,255,255,0.12);
-          transition: background 0.4s, box-shadow 0.4s;
-        }
-        .crt-power-led.on {
-          background: #c8860a;
-          box-shadow: 0 0 9px rgba(200, 134, 10, 0.9),
-                      inset 0 1px 0 rgba(255,255,255,0.2);
-        }
-
-        .crt-brand {
-          font-family: 'Courier New', Courier, monospace;
-          font-size: 9px;
-          color: #6a6460;
-          letter-spacing: 3px;
-          font-weight: 700;
-        }
-
-        .crt-vents { display: flex; gap: 3px; align-items: center; }
-        .crt-vent  { width: 1.5px; height: 12px; background: #888; border-radius: 1px; }
-
-        .crt-port {
-          position: absolute;
-          top: 20px;
-          right: -14px;
-          width: 28px;
-          height: 28px;
-          border-radius: 50%;
-          background: #252525;
-          border: 3px solid #505050;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          cursor: grab;
-          z-index: 40;
-          transition: border-color 0.15s, box-shadow 0.15s;
-          box-shadow: 0 2px 8px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.08);
-          animation: port-blink 800ms infinite alternate ease-in-out;
-        }
-        .crt-port:hover {
-          border-color: #c8860a;
-          box-shadow: 0 0 28px rgba(200, 134, 10, 0.95),
-                      0 0 42px rgba(200, 134, 10, 0.6);
-        }
-        .crt-port.plugged {
-          animation: none;
-          border-color: #c8860a;
-          box-shadow: 0 0 18px rgba(200, 134, 10, 0.7),
-                      0 2px 8px rgba(0,0,0,0.7);
-        }
-        .crt-port:active { cursor: grabbing; }
-
-        .crt-port-inner {
-          width: 9px;
-          height: 9px;
-          border-radius: 50%;
-          background: #0e0e0e;
-          border: 2px solid #3a3a3a;
-        }
-
-        .crt-wire-svg {
-          position: fixed;
-          inset: 0;
-          width: 100vw;
-          height: 100vh;
-          pointer-events: none;
-          z-index: 9999;
-        }
-
-        @keyframes port-blink {
-          from {
-            box-shadow: 0 0 12px rgba(200, 134, 10, 0.4),
-                        0 2px 8px rgba(0,0,0,0.7);
-          }
-          to {
-            box-shadow: 0 0 28px rgba(200, 134, 10, 0.95),
-                        0 0 42px rgba(200, 134, 10, 0.6),
-                        0 2px 8px rgba(0,0,0,0.7);
-          }
-        }
-      `}</style>
-
-      <svg className="crt-wire-svg" xmlns="http://www.w3.org/2000/svg">
-        {wireVisible && wireD && (
+      <svg className={styles.wire} xmlns="http://www.w3.org/2000/svg">
+        {wireD && (
           <>
-            <path d={wireD} fill="none" stroke="#0a0a0a"  strokeWidth="7"   strokeLinecap="round" opacity={0.45} />
-            <path d={wireD} fill="none" stroke="#2c2c2c"  strokeWidth="5"   strokeLinecap="round" />
-            <path d={wireD} fill="none" stroke="#585858"  strokeWidth="1.5" strokeLinecap="round" />
+            <path d={wireD} fill="none" stroke="#0a0a0a" strokeWidth="7" strokeLinecap="round" opacity={0.45} />
+            <path d={wireD} fill="none" stroke="#2c2c2c" strokeWidth="5" strokeLinecap="round" />
+            <path d={wireD} fill="none" stroke="#585858" strokeWidth="1.5" strokeLinecap="round" />
           </>
         )}
       </svg>
 
-      <div className="crt-hero">
-        <div className="crt-monitor">
-
+      <div className={styles.hero}>
+        <div className={styles.monitor}>
           <div
-            className={`crt-port${pluggedLabel ? ' plugged' : ''}`}
+            className={cn(styles.port, pluggedSlug && styles.portPlugged)}
             ref={portRef}
             onPointerDown={onPortPointerDown}
             title="drag to connect"
           >
-            <div className="crt-port-inner" />
+            <div className={styles.portInner} />
           </div>
 
-          <div className="crt-bezel">
-            <div className="crt-screen">
-              <div className="crt-terminal">
+          <div className={styles.bezel}>
+            <div className={styles.screen} style={{ "--lines": screenLines } as React.CSSProperties}>
+              <div className={styles.terminal} ref={terminalRef}>
+                <TerminalText text={displayText} onKey={pressKey} />
 
-                <span className="crt-terminal-text">{displayText}</span>
+                {promptText && <TerminalText text={promptText} onKey={pressKey} />}
 
-                {promptText && (
-                  <span className="crt-prompt">
-                    {promptText.includes('[y]') ? (
-                      <>
-                        {promptText.slice(0, promptText.indexOf('[y]'))}
-                        <span className="crt-prompt-y">[y]</span>
-                      </>
-                    ) : (
-                      promptText
-                    )}
-                  </span>
-                )}
+                <span className={styles.cursor} />
 
-                <span className="crt-cursor" />
-
+                <span className={styles.probe} ref={probeRef} aria-hidden="true">
+                  {"0".repeat(PROBE_LENGTH)}
+                </span>
               </div>
             </div>
           </div>
 
-          <div className="crt-chin">
-            <div className={`crt-power-led${pluggedLabel ? ' on' : ''}`} />
-            <div className="crt-brand">PORTFOWLIO-1</div>
-            <div className="crt-vents">
+          <div className={styles.chin}>
+            <div className={cn(styles.led, pluggedSlug && styles.ledOn)} />
+            <div className={styles.brand}>PORTFOWLIO-1</div>
+            <div className={styles.vents}>
               {Array.from({ length: 10 }).map((_, i) => (
-                <div key={i} className="crt-vent" />
+                <div key={i} className={styles.vent} />
               ))}
             </div>
           </div>
-
         </div>
       </div>
     </>

@@ -1,172 +1,51 @@
-import Link from 'next/link';
-import Crt from './components/crt';
-import CorkboardGallery from './components/corkboard-gallery';
+import Link from "next/link";
+import CorkboardGallery from "./components/corkboard-gallery";
+import Crt from "./components/crt";
 
 export default function Home() {
   return (
-    <div
-      style={{
-        minHeight: 'calc(100vh - 56px)',
-        background: '#6a381f',
-        overflow: 'hidden',
-        display: 'flex',
-        flexDirection: 'column',
-      }}
-    >
-      <div
-        style={{
-          flex: 1,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          padding: 'clamp(48px, 8vh, 280px) clamp(40px, 8vw, 350px)',
-        }}
-      >
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: '3fr 2fr',
-            alignItems: 'center',
-            gap: '0',
-            width: '100%',
-            maxWidth: '1200px',
-          }}
-          className="home-grid"
-        >
-
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
+    <div className="flex min-h-page flex-col overflow-hidden bg-background">
+      <section className="flex flex-1 items-center justify-center px-4 py-10 sm:px-10 md:py-[clamp(48px,8vh,280px)] lg:px-[clamp(40px,8vw,350px)]">
+        <div className="grid w-full max-w-6xl items-center gap-10 lg:grid-cols-[3fr_2fr] lg:gap-0">
+          <div className="flex items-center justify-center">
             <Crt />
           </div>
 
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'center',
-              paddingLeft: '42px',
-              gap: '28px',
-            }}
-            className="home-text"
-          >
-
-            <p
-              style={{
-                fontFamily: 'ui-monospace, monospace',
-                fontSize: '11px',
-                letterSpacing: '0.2em',
-                color: '#ebcea9',
-                textTransform: 'uppercase',
-                margin: 0,
-              }}
-            >
+          <div className="flex flex-col items-center gap-7 text-center lg:items-start lg:pl-10 lg:text-left">
+            <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-subtle">
               Love Skön / 2026
             </p>
 
-            <h1
-              style={{
-                fontFamily: 'var(--font-heading)',
-                fontSize: 'clamp(2.4rem, 3.2vw, 4rem)',
-                fontWeight: 800,
-                lineHeight: 1.05,
-                letterSpacing: '-0.03em',
-                color: '#ffffb3',
-                margin: 0,
-              }}
-            >
-              Welcome to<br />my portfolio.
+            <h1 className="text-4xl font-extrabold leading-[1.05] tracking-[-0.03em] text-primary sm:text-5xl lg:text-[clamp(2.4rem,3.2vw,4rem)]">
+              Welcome to
+              <br />
+              my portfolio.
             </h1>
 
-            <div
-              style={{
-                width: '48px',
-                height: '2px',
-                background: '#dcab6b',
-                borderRadius: '1px',
-              }}
-              className="home-divider"
-            />
+            <div className="h-0.5 w-12 rounded-[1px] bg-accent" />
 
-            <p
-              style={{
-                fontFamily: 'var(--font-heading)',
-                fontSize: 'clamp(1rem, 1.3vw, 1.2rem)',
-                fontWeight: 500,
-                color: '#dcab6b',
-                margin: 0,
-                letterSpacing: '-0.01em',
-              }}
-            >
-              Current project:{' '}
+            <p className="font-heading text-lg font-medium tracking-[-0.01em] text-muted lg:text-[clamp(1rem,1.3vw,1.2rem)]">
+              Current project:{" "}
               <Link
                 href="/saaf"
-                style={{
-                  color: '#ffffb3',
-                  textDecoration: 'none',
-                  borderBottom: '1.5px solid #8f5e32',
-                  paddingBottom: '1px',
-                  transition: 'color 0.15s, border-color 0.15s',
-                }}
-                className="home-project-link"
+                className="border-b-[1.5px] border-surface-elevated pb-px text-foreground transition-colors hover:border-accent hover:text-accent"
               >
                 SAAF
               </Link>
             </p>
 
-            <p
-              style={{
-                fontFamily: 'ui-monospace, monospace',
-                fontSize: '10px',
-                letterSpacing: '0.14em',
-                color: '#ebcea9',
-                margin: 0,
-                textTransform: 'uppercase',
-              }}
-            >
+            <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-subtle">
               ↑ plug in the wire to explore
             </p>
-
           </div>
         </div>
-      </div>
+      </section>
 
       <CorkboardGallery />
 
-      <div
-        className="text-center text-xs font-mono tracking-widest"
-        style={{ color: '#ebcea9', paddingBottom: '32px' }}
-      >
+      <p className="pb-8 text-center font-mono text-xs tracking-widest text-subtle">
         BUILT WITH NEXT.JS • TAILWIND • REACT • TYPESCRIPT
-      </div>
-
-      <style>{`
-        @media (max-width: 900px) {
-          .home-grid {
-            grid-template-columns: 1fr !important;
-          }
-          .home-text {
-            padding-left: 0 !important;
-            align-items: center !important;
-            text-align: center;
-          }
-          .home-text h1 {
-            text-align: center;
-          }
-          .home-divider {
-            margin: 0 auto;
-          }
-        }
-
-        .home-project-link:hover {
-          color: #dcab6b !important;
-          border-color: #dcab6b !important;
-        }
-      `}</style>
+      </p>
     </div>
   );
 }

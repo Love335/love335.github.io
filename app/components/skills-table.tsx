@@ -1,45 +1,38 @@
-'use client';
+import { cn } from "../lib/cn";
 
-import { useTheme } from '../theme-provider';
+export interface Skill {
+  category: string;
+  items: string;
+}
 
-export default function SkillsTable({
-  skills,
-}: {
-  skills: { category: string; items: string }[];
-}) {
-  const theme = useTheme();
+const cell = "px-4 py-4 sm:px-8 sm:py-6";
 
+export default function SkillsTable({ skills }: { skills: Skill[] }) {
   return (
-    <div className={`max-w-3xl mx-auto overflow-hidden rounded-3xl ${theme.skills.container}`}>
-      <table className="w-full">
-
+    <div className="mx-auto max-w-3xl overflow-hidden rounded-2xl border border-border bg-panel sm:rounded-3xl">
+      <table className="w-full text-sm sm:text-base">
         <thead>
-          <tr className={`border-b ${theme.skills.border}`}>
-            <th className={`px-8 py-5 text-left text-sm font-medium uppercase tracking-widest ${theme.skills.headerText}`}>
-              Category
-            </th>
-            <th className={`px-8 py-5 text-left text-sm font-medium uppercase tracking-widest ${theme.skills.headerText}`}>
-              Technologies
-            </th>
+          <tr className="border-b border-panel-border">
+            {["Category", "Technologies"].map((heading) => (
+              <th
+                key={heading}
+                className="px-4 py-4 text-left text-xs font-medium uppercase tracking-widest text-panel-muted sm:px-8 sm:py-5 sm:text-sm"
+              >
+                {heading}
+              </th>
+            ))}
           </tr>
         </thead>
-
-        <tbody className={`divide-y ${theme.skills.divider}`}>
-          {skills.map((row, index) => (
-            <tr key={index} className={`transition-colors ${theme.skills.rowHover}`}>
-              
-              <td className={`px-8 py-6 font-medium whitespace-nowrap ${theme.skills.categoryText}`}>
+        <tbody className="divide-y divide-panel-border">
+          {skills.map((row) => (
+            <tr key={row.category} className="transition-colors hover:bg-panel-hover">
+              <td className={cn(cell, "font-medium text-panel-foreground sm:whitespace-nowrap")}>
                 {row.category}
               </td>
-
-              <td className={`px-8 py-6 ${theme.skills.itemsText}`}>
-                {row.items}
-              </td>
-
+              <td className={cn(cell, "text-panel-muted")}>{row.items}</td>
             </tr>
           ))}
         </tbody>
-
       </table>
     </div>
   );

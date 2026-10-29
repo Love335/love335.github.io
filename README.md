@@ -1,36 +1,64 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Portfolio
 
-## Getting Started
-
-First, run the development server:
+Portfolio built with Next.js (App Router, static export), React, TypeScript and Tailwind CSS v4. Deployed to GitHub Pages by `.github/workflows/deploy.yml` on every push to `main`.
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+npm run dev     # http://localhost:3000
+npm run build   # static export in out/
+npm run lint
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## How the site is organised
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```
+app/
+  layout.tsx                 fonts, navbar, wire provider
+  globals.css                Tailwind setup: maps theme tokens to utilities
+  styles/themes.css          one colour palette per project (data-theme)
+  lib/projects.ts            every project: route, navbar tab, theme, CRT text
+  lib/collaborators.ts       people who appear on project pages
+  components/
+    navbar.tsx, crt.tsx, corkboard-gallery.tsx, wire-context.tsx   home page
+    project/                 building blocks for project pages
+  <project>/page.tsx         one folder per project
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Colours
 
-## Learn More
+Every page uses the same semantic colour utilities: `bg-background`, `text-primary`, `text-muted`,
+`bg-surface`, `border-border`, `bg-panel`, and so on. Which actual colours those resolve to is decided
+by the `data-theme` attribute on the page root, which `ProjectPage` sets from its `theme` prop.
 
-To learn more about Next.js, take a look at the following resources:
+- `app/styles/themes.css` defines each theme as a block of CSS variables. Every theme sets the same
+  tokens (`--background`, `--primary`, `--panel-border`, …); the block at the top documents what each
+  one is for. The default, with no `data-theme`, is the Beatnik palette, which also skins the navbar
+  and home page.
+- `app/globals.css` maps those variables to Tailwind utilities inside `@theme inline`.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+To add a theme, add a `[data-theme="name"]` block to `themes.css`, add the name to `ThemeName` in
+`app/lib/projects.ts`, and set `theme="name"` on the page's `ProjectPage`.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Projects
 
-## Deploy on Vercel
+`app/lib/projects.ts` is the single list of projects. The navbar renders its tabs from it, the
+home-page CRT reads the text it types out from it, and pressing `[y]` on the CRT navigates to the
+project's `href`. To add a project, add an entry there and a `page.tsx` in a folder named after
+its slug.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Project pages
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Pages are composed from the components in `app/components/project/`:
+
+- `ProjectPage` sets the theme and the page container.
+- `ProjectHero` is the title, tagline, collaborators, blurb and lead media.
+- `FeatureGrid` and `Feature` are the two-column masonry of screenshots with descriptions.
+- `TechSection` is the "Tech & Tools Used" table.
+- `MediaFrame`, `Video` and `Screenshot` frame the media.
+
+### Responsive layout
+
+Layout is mobile-first with Tailwind's `sm` / `md` / `lg` breakpoints. The CRT monitor on the home
+page is sized in container-query units so it scales with the viewport; the wire can be dragged with
+a mouse or a finger, and `[y]` can be clicked or tapped. While idle, `[y]` pulls the wire to a random
+tab by itself.

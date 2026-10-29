@@ -1,13 +1,25 @@
 import type { Metadata } from "next";
-import { Plus_Jakarta_Sans } from "next/font/google";
+import { Caveat, Plus_Jakarta_Sans } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 import Navbar from "./components/navbar";
 import ScrollIndicator from "./components/scroll-indicator";
 import { WireProvider } from "./components/wire-context";
 
 const jakarta = Plus_Jakarta_Sans({
-  variable: "--font-sans",
   subsets: ["latin"],
+  variable: "--font-jakarta",
+});
+
+const cabinet = localFont({
+  src: "../public/fonts/cabinet/CabinetGrotesk-Variable.woff2",
+  weight: "100 900",
+  variable: "--font-cabinet",
+});
+
+const caveat = Caveat({
+  subsets: ["latin"],
+  variable: "--font-caveat",
 });
 
 export const metadata: Metadata = {
@@ -21,14 +33,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${jakarta.variable} antialiased`}>
-      <body className="bg-background text-foreground font-sans min-h-screen">
+    <html
+      lang="en"
+      className={`${jakarta.variable} ${cabinet.variable} ${caveat.variable}`}
+    >
+      <body>
         <WireProvider>
           <Navbar />
-          <main className="pt-12">
-            {children}
-            <ScrollIndicator />
-          </main>
+          <main className="pt-nav">{children}</main>
+          <ScrollIndicator />
         </WireProvider>
       </body>
     </html>

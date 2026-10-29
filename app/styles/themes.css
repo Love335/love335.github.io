@@ -1,0 +1,129 @@
+/*
+ * Colour themes
+ * =============
+ * Every theme defines the same set of tokens. globals.css maps them onto Tailwind
+ * utilities (bg-background, text-primary, border-panel-border, …), so a page is
+ * themed by putting data-theme="<name>" on its root element and nothing else.
+ * The default (no attribute) is the Beatnik palette, which also skins the navbar,
+ * the home page and the "under construction" pages.
+ *
+ *   background / foreground           page background and default text
+ *   primary / primary-hover           headings, buttons
+ *   accent                            hover rings, links, status dots
+ *   muted / subtle                    secondary and tertiary text
+ *   surface / surface-elevated        cards, media frames, raised controls
+ *   border                            card and frame outlines
+ *   panel / panel-foreground /
+ *   panel-muted / panel-border /
+ *   panel-hover                       text panels such as the skills table
+ */
+
+:root,
+[data-theme="beatnik"] {
+  --background: #6a381f; /* dark walnut */
+  --foreground: #ffffb3; /* cream */
+  --primary: #ffffb3;
+  --primary-hover: #dcab6b;
+  --accent: #dcab6b; /* warm gold */
+  --muted: #dcab6b;
+  --subtle: #ebcea9; /* sand */
+  --surface: #774e24; /* walnut */
+  --surface-elevated: #8f5e32; /* mid walnut */
+  --border: #774e24;
+  --panel: #774e24;
+  --panel-foreground: #ffffb3;
+  --panel-muted: #dcab6b;
+  --panel-border: #dcab6b;
+  --panel-hover: #6a381f;
+}
+
+[data-theme="about"] {
+  --background: #3a2f37; /* deep purple-grey */
+  --foreground: #cfd186; /* light beige-yellow */
+  --primary: #e3655b; /* coral */
+  --primary-hover: #d14f4a;
+  --accent: #5b8c5a; /* mid green */
+  --muted: #b9c0b4;
+  --subtle: #a0a89c;
+  --surface: #596157; /* muted green-grey */
+  --surface-elevated: #52414c; /* muted purple-grey */
+  --border: #484c46;
+  --panel: #596157;
+  --panel-foreground: #e3655b;
+  --panel-muted: #b9c0b4;
+  --panel-border: #b9c0b4;
+  --panel-hover: #4f544d;
+}
+
+/* Beatnik's hex values, reassigned: beige page, burgundy headings, walnut copy. */
+[data-theme="breakeven"] {
+  --background: #dcab6b; /* beige */
+  --foreground: #8f5e32; /* walnut */
+  --primary: #6e0d25; /* burgundy */
+  --primary-hover: #460818;
+  --accent: #dcab6b;
+  --muted: #8f5e32;
+  --subtle: #8f5e32;
+  --surface: #774e24;
+  --surface-elevated: #8f5e32;
+  --border: #774e24;
+  --panel: #6e0d25; /* burgundy table on the beige page */
+  --panel-foreground: #ffffb3;
+  --panel-muted: #dcab6b;
+  --panel-border: #dcab6b;
+  --panel-hover: #460818;
+}
+
+[data-theme="bonsai"] {
+  --background: #ccfccb; /* soft green */
+  --foreground: #464e47; /* dark forest */
+  --primary: #568259; /* deep green */
+  --primary-hover: #464e47;
+  --accent: #96e6b3; /* mid green */
+  --muted: #568259;
+  --subtle: #568259;
+  --surface: #96e6b3;
+  --surface-elevated: #f1fffa;
+  --border: #96e6b3;
+  --panel: #96e6b3;
+  --panel-foreground: #568259;
+  --panel-muted: #568259;
+  --panel-border: #568259;
+  --panel-hover: rgba(86, 130, 89, 0.15);
+}
+
+[data-theme="localhero"] {
+  --background: #f1e4cc; /* warm sand */
+  --foreground: #2b2118;
+  --primary: #4a2c1a; /* espresso */
+  --primary-hover: #d9741a;
+  --accent: #d9741a; /* burnt orange */
+  --muted: #6b5443; /* warm brown */
+  --subtle: #6b5443;
+  --surface: #faf1df; /* warm ivory */
+  --surface-elevated: #faf1df;
+  --border: #d2bd97;
+  --panel: #faf1df;
+  --panel-foreground: #4a2c1a;
+  --panel-muted: #6b5443;
+  --panel-border: #d2bd97;
+  --panel-hover: #e6d5b6;
+}
+
+[data-theme="moneymaker"] {
+  --background: #0b1220; /* deep navy */
+  --foreground: #e9edf5;
+  --primary: #d4af37; /* gold */
+  --primary-hover: #d4af37;
+  --accent: #3ecf8e; /* market green */
+  --muted: #9aa5b8; /* cool slate */
+  --subtle: #9aa5b8;
+  --surface: #131c2e;
+  --surface-elevated: #131c2e;
+  --border: #26324a;
+  --panel: #131c2e;
+  --panel-foreground: #d4af37;
+  --panel-muted: #9aa5b8;
+  --panel-border: #26324a;
+  --panel-hover: #1a2438;
+}

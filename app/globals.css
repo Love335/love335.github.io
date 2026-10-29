@@ -1,138 +1,57 @@
 @import "tailwindcss";
+@import "./styles/themes.css";
 
-@font-face {
-  font-family: "Cabinet Grotesk";
-  src: url("/fonts/cabinet/CabinetGrotesk-Variable.woff2") format("woff2");
-  font-weight: 100 900;
-  font-display: swap;
+:root {
+  /* The CRT's amber phosphor glow, shared by the monitor, its port and the navbar jacks. */
+  --crt-amber: #c8860a;
 }
 
 @theme inline {
-  /* =========================================================
-     FONTS
-     ======================================================== */
-  --font-sans: var(--font-sans);
-  --font-heading: "Cabinet Grotesk", var(--font-sans);
-  --font-mono: ui-monospace, monospace;
+  /* Fonts are loaded with next/font in app/layout.tsx, which sets these variables. */
+  --font-sans: var(--font-jakarta);
+  --font-heading: var(--font-cabinet);
+  --font-hand: var(--font-caveat);
+  --font-mono: ui-monospace, "Courier New", Courier, monospace;
 
-  /* =========================================================
-     ABOUT PALETTE (Earthy Systems Theme for About Page)
-     ======================================================== */
-  --about-1: #52414c; /* deep muted purple-gray */
-  --about-2: #596157; /* dark muted green-gray */
-  --about-3: #5b8c5a; /* vibrant mid green */
-  --about-4: #cfd186; /* warm light beige-yellow */
-  --about-5: #e3655b; /* energetic coral */
-  --about-6: #3a2f37; /* deeper background variant */
-  --about-7: #7a9a6f; /* softer green */
-  --about-8: #e6d9b0; /* lighter highlight */
-  --about-9: #f07e72; /* softer coral */
+  /* Height of the fixed navbar: h-nav, pt-nav and the min-h-page utility below. */
+  --spacing-nav: 3.5rem;
 
-  /* About Semantic Tokens */
-  --about-background: var(--about-6);
-  --about-foreground: var(--about-4);
-  --about-primary: var(--about-5);
-  --about-primary-hover: #d14f4a;
-  --about-accent: var(--about-3);
-  --about-accent-hover: #4e7a4e;
-  --about-surface: var(--about-2);
-  --about-surface-elevated: var(--about-1);
-  --about-border: #484c46;
-  --about-muted: #b9c0b4;
-  --about-subtle: #a0a89c;
-  --about-highlight: var(--about-4);
-
-  /* About Row Hovers */
-  --about-row-hover-primary: #3f2e3a;
-  --about-row-hover-surface: #4f544d;
-
-  /* =========================================================
-     BEATNIK (DEFAULT) PALETTE
-     ======================================================== */
-  --color-1: #6e0d25;     /* dark red */
-  --color-2: #ffffb3;     /* cream */
-  --color-3: #dcab6b;     /* warm gold */
-  --color-4: #774e24;     /* walnut */
-  --color-5: #6a381f;     /* dark walnut */
-  --color-6: #8f5e32;     /* mid walnut */
-  --color-7: #460818;     /* deep dark red */
-
-  /* Beatnik Semantic Tokens */
-  --color-background: var(--color-5);
-  --color-foreground: var(--color-2);
-  --color-primary: var(--color-1);
-  --color-primary-hover: var(--color-7);
-  --color-accent: var(--color-3);
-  --color-accent-hover: var(--color-6);
-  --color-surface: var(--color-4);
-  --color-surface-elevated: var(--color-6);
-  --color-border: var(--color-4);
-  --color-muted: var(--color-3);
-  --color-subtle: var(--color-6);
-  --color-highlight: var(--color-2);
-
-  /* Beatnik Row Hovers */
-  --row-hover-primary: #460818;
-  --row-hover-walnut: #6a381f;
-
-  /* =========================================================
-     BREAKEVEN PALETTE
-     ======================================================== */
-  --breakeven-background: #1a1423;
-  --breakeven-foreground: #f5f1e6;
-  --breakeven-primary: #a855f7;      /* purple */
-  --breakeven-accent: #fbbf24;       /* amber */
-  --breakeven-surface: #2a1f3d;
-  --breakeven-border: #3b2a57;
-  --breakeven-muted: #c4b5fd;
-  --breakeven-subtle: #c4b5fd;
-
-  /* =========================================================
-     BONSAI PALETTE
-     ======================================================== */
-  --bonsai-1: #f1fffa;   /* background light */
-  --bonsai-2: #ccfccb;   /* soft green */
-  --bonsai-3: #96e6b3;   /* mid green */
-  --bonsai-4: #568259;   /* deep green */
-  --bonsai-5: #464e47;   /* dark forest */
-
-  /* Bonsai Semantic Tokens */
-  --bonsai-background: var(--bonsai-1);
-  --bonsai-foreground: var(--bonsai-5);
-  --bonsai-primary: var(--bonsai-4);
-  --bonsai-accent: var(--bonsai-3);
-  --bonsai-surface: var(--bonsai-2);
-  --bonsai-surface-deep: var(--bonsai-3);
-  --bonsai-border: var(--bonsai-3);
-  --bonsai-muted: var(--bonsai-4);
-  --bonsai-subtle: var(--bonsai-5);
-  --bonsai-row-hover: rgba(86, 130, 89, 0.15);
-
-  --localhero-background: #f1e4cc;  /* warm sand page */
-  --localhero-foreground: #2b2118;
-  --localhero-primary: #4a2c1a;     /* espresso brown headings */
-  --localhero-muted: #6b5443;       /* warm brown body text */
-  --localhero-surface: #faf1df;     /* warm ivory card frame around dark images */
-  --localhero-border: #d2bd97;
-  --localhero-accent: #d9741a;      /* burnt orange hover accent */
-  --localhero-row-hover: #e6d5b6;
-
-  --moneymaker-background: #0b1220;  /* deep navy page */
-  --moneymaker-foreground: #e9edf5;
-  --moneymaker-primary: #d4af37;     /* gold headings */
-  --moneymaker-muted: #9aa5b8;       /* cool slate body text */
-  --moneymaker-surface: #131c2e;     /* card frame, one step up from bg */
-  --moneymaker-border: #26324a;
-  --moneymaker-accent: #3ecf8e;      /* market-green hover accent */
-  --moneymaker-row-hover: #1a2438;
+  /* Semantic colours, defined per theme in styles/themes.css. */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-accent: var(--accent);
+  --color-muted: var(--muted);
+  --color-subtle: var(--subtle);
+  --color-surface: var(--surface);
+  --color-surface-elevated: var(--surface-elevated);
+  --color-border: var(--border);
+  --color-panel: var(--panel);
+  --color-panel-foreground: var(--panel-foreground);
+  --color-panel-muted: var(--panel-muted);
+  --color-panel-border: var(--panel-border);
+  --color-panel-hover: var(--panel-hover);
+  --color-crt-amber: var(--crt-amber);
 }
 
-body {
-  @apply bg-background text-foreground font-sans min-h-screen antialiased;
+/* Fills the viewport below the fixed navbar. */
+@utility min-h-page {
+  min-height: calc(100dvh - var(--spacing-nav));
 }
 
-h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-heading);
-  letter-spacing: -0.02em;
-}
+@layer base {
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+  }
 
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-heading);
+    letter-spacing: -0.02em;
+  }
+}
